@@ -1,13 +1,14 @@
-import React, { useState } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 
 import './styles.scss'
 import { StandardInput } from '.'
 
 interface Props extends React.HTMLProps<HTMLInputElement> {
   label: string
+  setOutputValue: Dispatch<SetStateAction<number | undefined>>
 }
 
-const CurrencyInput: React.FC<Props> = ({ label, ...rest }) => {
+const CurrencyInput: React.FC<Props> = ({ label, setOutputValue, ...rest }) => {
   const [value, setValue] = useState('')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,6 +22,7 @@ const CurrencyInput: React.FC<Props> = ({ label, ...rest }) => {
       .padStart(4, '0')
     if (str == '0.00') str = ''
     setValue(str)
+    if (setOutputValue) setOutputValue(Number(str))
   }
 
   return (
