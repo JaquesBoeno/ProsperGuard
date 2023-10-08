@@ -1,0 +1,9 @@
+.AppContainer {
+  height: 100vh;
+  display: flex;
+  overflow-x: none;
+
+  .pages {
+    overflow-y: auto;
+  }
+}

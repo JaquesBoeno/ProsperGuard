@@ -1,0 +1,29 @@
+aside {
+  height: 100%;
+  padding: 3rem;
+  color: var(--text);
+  background-color: var(--white);
+  box-shadow: var(--box-shadow);
+
+  h1 {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  ul {
+    margin-top: 2rem;
+    list-style-type: none;
+
+    li {
+      margin: 1rem 0;
+      border: 1px solid #ccc;
+      border-radius: var(--border-radius);
+
+      a {
+        display: block;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+      }
+    }
+  }
+}
