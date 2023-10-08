@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.scss'
 import { SideBar } from './components/SideBar'
 import { Calcs } from './pages/Calcs'
+import { CompoundInterestContextProvider } from './contexts/CompoundInterestContext'
 
 const App = () => {
   return (
@@ -10,7 +11,14 @@ const App = () => {
         <SideBar />
         <div className="pages container">
           <Routes>
-            <Route path="/" element={<Calcs />} />
+            <Route
+              path="/"
+              element={
+                <CompoundInterestContextProvider>
+                  <Calcs />
+                </CompoundInterestContextProvider>
+              }
+            />
           </Routes>
         </div>
       </BrowserRouter>
