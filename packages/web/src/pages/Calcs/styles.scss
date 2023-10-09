@@ -1,25 +1,2 @@
 .CalcsPage {
-  .CompoundInterest {
-    > div {
-      margin-top: 2rem;
-    }
-    .InputsWrapper {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-    .results {
-      display: flex;
-      justify-content: space-between;
-      p {
-        font-weight: bold;
-        font-size: 1.5rem;
-        text-align: center;
-        span {
-          font-weight: 400;
-          font-size: 1.1rem;
-        }
-      }
-    }
-  }
 }
