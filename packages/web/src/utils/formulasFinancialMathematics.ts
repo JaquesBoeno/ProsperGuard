@@ -33,7 +33,9 @@ export const FvWithMonthlyAndInitial = (
   T: number /* Interest per month */
 ) => {
   const fv = Number(
-    (CompoundInterest(C, I, T).fv + FvWithMonthly(R, I, T).fv).toFixed(2)
+    (
+      CompoundInterest(C, I / 100, T).fv + FvWithMonthly(R, I / 100, T).fv
+    ).toFixed(2)
   )
   const totalInvested = Number((C + R * T).toFixed(2))
   const totalDividends = Number((fv - totalInvested).toFixed(2))

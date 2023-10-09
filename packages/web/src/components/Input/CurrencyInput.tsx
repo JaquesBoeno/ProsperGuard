@@ -5,7 +5,7 @@ import { StandardInput } from '.'
 
 interface Props extends React.HTMLProps<HTMLInputElement> {
   label: string
-  setOutputValue: Dispatch<SetStateAction<number | undefined>>
+  setOutputValue?: Dispatch<SetStateAction<number | undefined>>
 }
 
 const CurrencyInput: React.FC<Props> = ({ label, setOutputValue, ...rest }) => {
@@ -13,16 +13,28 @@ const CurrencyInput: React.FC<Props> = ({ label, setOutputValue, ...rest }) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let str = e.target.value
-    str = str
+    let [integer, decimal] = str
       .replace(/\D/g, '')
       .padStart(4, '0')
       .split(/(?=..$)/)
-      .join('.')
-      .replace(/^0+/, '')
-      .padStart(4, '0')
+
+    integer = Number(integer).toLocaleString('pt-br')
+
+    str = [integer, decimal].join(',').replace(/^0+/, '').padStart(4, '0')
+
     if (str == '0.00') str = ''
+
     setValue(str)
-    if (setOutputValue) setOutputValue(Number(str))
+
+    if (setOutputValue)
+      setOutputValue(
+        Number(
+          str
+            .replace(/[,.]/g, '')
+            .split(/(?=..$)/)
+            .join('.')
+        )
+      )
   }
 
   return (
