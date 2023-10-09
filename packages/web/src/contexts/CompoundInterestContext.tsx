@@ -52,7 +52,7 @@ export const CompoundInterestContextProvider: React.FC<
         FvWithMonthlyAndInitial(
           initialValue,
           monthlyContribution,
-          interest / 100,
+          interest,
           time
         )
       )
