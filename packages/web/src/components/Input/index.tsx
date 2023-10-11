@@ -1,47 +1,49 @@
-import React, { Dispatch, Ref, SetStateAction, useState } from 'react'
+import React, { Ref } from 'react'
 import './styles.scss'
+import { CurrencyInput } from './CurrencyInput'
+import { DateInput } from './DateInput'
 
-interface Props extends React.HTMLProps<HTMLInputElement> {
+interface StandardInputProps extends React.HTMLProps<HTMLInputElement> {
   label: string
-  prefix?: string
   inputType?: 'number' | 'text'
-  setOutputValue?: Dispatch<SetStateAction<any>>
   reference?: Ref<any>
 }
 
-const StandardInput: React.FC<Props> = ({
+interface InputProps {
+  label: string
+  inputType: 'Date' | 'Currency' | 'Text' | 'Number'
+}
+
+const StandardInput: React.FC<StandardInputProps> = ({
   label,
-  prefix,
   children,
   inputType,
-  setOutputValue,
   reference,
   ...rest
 }) => {
-  const [value, setValue] = useState('')
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let str = e.target.value
-    if (inputType == 'number') str = str.replace(/\D/g, '')
-    setValue(str)
-    if (setOutputValue) setOutputValue(Number(str))
-  }
-
   return (
     <div className="InputComponent">
-      <input
-        ref={reference}
-        value={value}
-        onChange={handleChange}
-        {...rest}
-        required
-      >
+      <input ref={reference} {...rest} required>
         {children}
       </input>
       <span>{label}</span>
-      {prefix && <span className="prefix"> {prefix}</span>}
     </div>
   )
 }
+const Input: React.FC<InputProps> = ({ inputType, label }) => {
+  switch (inputType) {
+    case 'Currency':
+      return <CurrencyInput label={label} />
 
-export { StandardInput }
+    case 'Date':
+      return <DateInput label={label} />
+
+    case 'Text':
+      return <StandardInput label={label} />
+
+    default:
+      return <StandardInput label={label} />
+  }
+}
+
+export { StandardInput, Input }
