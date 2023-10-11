@@ -1,0 +1,15 @@
+button.ButtonComponent {
+  border: 0;
+  background-color: #fff;
+  line-height: 1rem;
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+  color: #fff;
+  font-weight: 600;
+  transition: var(--transition-time) opacity;
+  background-color: var(--secondary);
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
