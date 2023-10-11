@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, Ref, SetStateAction, useState } from 'react'
 import './styles.scss'
 
 interface Props extends React.HTMLProps<HTMLInputElement> {
@@ -6,6 +6,7 @@ interface Props extends React.HTMLProps<HTMLInputElement> {
   prefix?: string
   inputType?: 'number' | 'text'
   setOutputValue?: Dispatch<SetStateAction<any>>
+  reference?: Ref<any>
 }
 
 const StandardInput: React.FC<Props> = ({
@@ -14,6 +15,7 @@ const StandardInput: React.FC<Props> = ({
   children,
   inputType,
   setOutputValue,
+  reference,
   ...rest
 }) => {
   const [value, setValue] = useState('')
@@ -27,7 +29,13 @@ const StandardInput: React.FC<Props> = ({
 
   return (
     <div className="InputComponent">
-      <input value={value} onChange={handleChange} {...rest} required>
+      <input
+        ref={reference}
+        value={value}
+        onChange={handleChange}
+        {...rest}
+        required
+      >
         {children}
       </input>
       <span>{label}</span>
