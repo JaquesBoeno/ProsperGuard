@@ -9,7 +9,10 @@ const SideBar: React.FC = () => {
       <h1>App logo</h1>
       <ul>
         <li>
-          <Link to="/">juros composto</Link>
+          <Link to="/">Calculadora</Link>
+        </li>
+        <li>
+          <Link to="/calcs">Calculadora</Link>
         </li>
       </ul>
     </aside>
