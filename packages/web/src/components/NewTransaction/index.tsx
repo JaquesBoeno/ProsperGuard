@@ -1,22 +1,36 @@
 import React from 'react'
-import './styles.scss'
-import { Input, StandardInput } from '../Input'
-import { Button } from '../Button'
-import { useForm, SubmitHandler, Controller } from 'react-hook-form'
-import { CurrencyInput } from '../Input/CurrencyInput'
 
-interface Inputs {
-  type: string
-  name: string
-  description: string
-  transaction: string
-  date: string
-}
+// Components
+import { StandardInput } from '../Input'
+import { CurrencyInput } from '../Input/CurrencyInput'
+import { DateInput } from '../Input/DateInput'
+import { Button } from '../Button'
+
+// Form Imports
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm, SubmitHandler } from 'react-hook-form'
+
+import './styles.scss'
+
+const createTransactionSchema = z.object({
+  type: z.string(),
+  name: z.string(),
+  description: z.string(),
+  value: z.string().transform((str) => {
+    return Number(str.replace(/\D/g, '')) / 100
+  }),
+  date: z.string(),
+})
+
+type createTransactionFormData = z.infer<typeof createTransactionSchema>
 
 const NewTransaction: React.FC = () => {
-  const { register, control, handleSubmit, watch } = useForm<Inputs>()
+  const { register, handleSubmit } = useForm<createTransactionFormData>({
+    resolver: zodResolver(createTransactionSchema),
+  })
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const onSubmit: SubmitHandler<createTransactionFormData> = (data) => {
     console.log(data)
   }
 
@@ -24,61 +38,16 @@ const NewTransaction: React.FC = () => {
     <div className="NewTransaction">
       <div className="inputs">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Controller
-            name="transaction"
-            control={control}
-            render={({ field }) => (
-              <Input inputType="Currency" key={1} label="Valor" {...field} />
-            )}
-          />
-          <Controller
-            name="date"
-            control={control}
-            render={({ field }) => (
-              <Input inputType="Date" label="Data" {...field} />
-            )}
-          />
-          {/* <Controller
-            name="type"
-            control={control}
-            render={({ field }) => (
-              <Input inputType="Text" label="Tipo" {...field} />
-            )}
-          />
-          <Controller
-            name="name"
-            control={control}
-            render={({ field }) => (
-              <Input inputType="Text" label="Nome" {...field} />
-            )}
-          />
-          <Controller
-            name="description"
-            control={control}
-            render={({ field }) => (
-              <Input inputType="Text" label="Descrição" {...field} />
-            )}
-          />
-          <Controller
-            name="transaction"
-            control={control}
-            render={({ field }) => (
-              <Input inputType="Currency" key={1} label="Valor" {...field} />
-            )}
-          />
-          <Controller
-            name="date"
-            control={control}
-            render={({ field }) => (
-              <Input inputType="Date" label="Data" {...field} />
-            )}
-          /> */}
-          <input type="submit" />
+          <div>
+            <StandardInput label="Tipo" {...register('type')} />
+            <StandardInput label="Nome" {...register('name')} />
+            <StandardInput label="Descrição" {...register('description')} />
+            <CurrencyInput label="Valor" {...register('value')} />
+            <DateInput label="Data" {...register('date')} />
+          </div>
+          <Button type="submit">Adicionar transação</Button>
         </form>
-        <CurrencyInput label="Valor" />
       </div>
-      <Button>Adicionar transação</Button>
-      <Button>Cancelar</Button>
     </div>
   )
 }
