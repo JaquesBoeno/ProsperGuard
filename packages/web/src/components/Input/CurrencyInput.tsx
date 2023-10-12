@@ -11,7 +11,6 @@ interface Props extends React.HTMLProps<HTMLInputElement> {
 const CurrencyInput: React.FC<Props> = ({ label, ...rest }) => {
   const { ref } = useIMask({
     mask: 'R$ num',
-    lazy: false,
     blocks: {
       num: {
         mask: Number,

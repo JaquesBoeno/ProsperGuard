@@ -30,19 +30,19 @@ const StandardInput: React.FC<StandardInputProps> = ({
     </div>
   )
 }
-const Input: React.FC<InputProps> = ({ inputType, label }) => {
+const Input: React.FC<InputProps> = ({ inputType, label, ...rest }) => {
   switch (inputType) {
     case 'Currency':
-      return <CurrencyInput label={label} />
+      return <CurrencyInput label={label} {...rest} />
 
     case 'Date':
-      return <DateInput label={label} />
+      return <DateInput label={label} {...rest} />
 
     case 'Text':
-      return <StandardInput label={label} />
+      return <StandardInput label={label} {...rest} />
 
     default:
-      return <StandardInput label={label} />
+      return <StandardInput label={label} {...rest} />
   }
 }
 
