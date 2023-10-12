@@ -3,6 +3,7 @@ import './App.scss'
 import { SideBar } from './components/SideBar'
 import { Calcs } from './pages/Calcs'
 import { Overview } from './pages/Overview'
+import { TransactionContextProvider } from './contexts/TransactionContext'
 
 const App = () => {
   return (
@@ -11,7 +12,14 @@ const App = () => {
         <SideBar />
         <div className="pages container">
           <Routes>
-            <Route path="/" element={<Overview />} />
+            <Route
+              path="/"
+              element={
+                <TransactionContextProvider>
+                  <Overview />
+                </TransactionContextProvider>
+              }
+            />
             <Route path="/calcs" element={<Calcs />} />
           </Routes>
         </div>

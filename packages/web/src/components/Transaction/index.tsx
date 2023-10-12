@@ -3,7 +3,7 @@ import './styles.scss'
 import { FaArrowDownLong, FaArrowUpLong } from 'react-icons/fa6'
 
 export type TransactionType = {
-  type: 'expense' | 'income'
+  type: string
   name: string
   description: string
   value: number

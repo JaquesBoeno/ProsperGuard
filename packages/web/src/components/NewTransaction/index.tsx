@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 // Components
 import { StandardInput } from '../Input'
@@ -12,6 +12,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, SubmitHandler } from 'react-hook-form'
 
 import './styles.scss'
+import { TransactionContext } from '../../contexts/TransactionContext'
 
 const createTransactionSchema = z.object({
   type: z.string(),
@@ -30,8 +31,10 @@ const NewTransaction: React.FC = () => {
     resolver: zodResolver(createTransactionSchema),
   })
 
-  const onSubmit: SubmitHandler<createTransactionFormData> = (data) => {
-    console.log(data)
+  const { createTransaction } = useContext(TransactionContext)
+
+  const onSubmit: SubmitHandler<createTransactionFormData> = ({ ...props }) => {
+    createTransaction({ ...props })
   }
 
   return (
@@ -45,7 +48,8 @@ const NewTransaction: React.FC = () => {
             <CurrencyInput label="Valor" {...register('value')} />
             <DateInput label="Data" {...register('date')} />
           </div>
-          <Button type="submit">Adicionar transação</Button>
+          <Button color="green" type="submit" title="Adicionar transação" />
+          <Button color="red" type="button" title="Cancelar" />
         </form>
       </div>
     </div>

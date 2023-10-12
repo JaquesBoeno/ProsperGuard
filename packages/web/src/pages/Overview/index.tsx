@@ -1,41 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 
 import './styles.scss'
 import { Transaction, TransactionType } from '../../components/Transaction'
 import { Button } from '../../components/Button'
 import { NewTransaction } from '../../components/NewTransaction'
+import { TransactionContext } from '../../contexts/TransactionContext'
 
 const Overview: React.FC = () => {
-  const [transactions, setTransactions] = useState<TransactionType[]>([
-    {
-      type: 'expense',
-      name: 'Açaí',
-      description: 'Acaí que comprei no CAECA',
-      value: 10,
-      date: '30/09',
-    },
-    {
-      type: 'expense',
-      name: 'Açaí',
-      description: 'Acaí que comprei no CAECA',
-      value: 10,
-      date: '30/09',
-    },
-    {
-      type: 'expense',
-      name: 'Açaí',
-      description: 'Acaí que comprei no CAECA',
-      value: 10,
-      date: '30/09',
-    },
-    {
-      type: 'expense',
-      name: 'Açaí',
-      description: 'Acaí que comprei no CAECA',
-      value: 10,
-      date: '30/09',
-    },
-  ])
+  const { transactions } = useContext(TransactionContext)
+
   const [showNewTransaction, toggleShowNewTransaction] = useState(false)
 
   return (
@@ -45,9 +18,10 @@ const Overview: React.FC = () => {
       </section>
       <section>
         <h1>Entradas e Saídas</h1>
-        <Button onClick={() => toggleShowNewTransaction(true)}>
-          Criar Transação
-        </Button>
+        <Button
+          onClick={() => toggleShowNewTransaction(true)}
+          title="Criar Transação"
+        />
 
         {showNewTransaction && <NewTransaction />}
 
