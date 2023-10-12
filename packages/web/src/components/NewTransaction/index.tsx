@@ -36,7 +36,6 @@ const NewTransaction: React.FC = () => {
 
   const onSubmit: SubmitHandler<createTransactionFormData> = ({ ...props }) => {
     createTransaction({ ...props })
-    console.log({ ...props })
   }
 
   return (

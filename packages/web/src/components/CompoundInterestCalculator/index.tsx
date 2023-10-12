@@ -28,6 +28,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '../Button'
 import { SelectInput } from '../Input/SelectInput'
+import { PercentInput } from '../Input/PercentInput'
 
 interface DataInterface {
   fv: Array<Number>
@@ -47,13 +48,13 @@ ChartJs.register(
 
 const calcCompoundInterestSchema = z.object({
   initialValue: z.string().transform((value) => {
-    return Number(value.replace(/\D/g, '')) / 100
+    return Number(value.replace(/[^0-9,]/g, '').replace(',', '.'))
   }),
   monthlyContribution: z.string().transform((value) => {
-    return Number(value.replace(/\D/g, '')) / 100
+    return Number(value.replace(/[^0-9,]/g, '').replace(',', '.'))
   }),
   interest: z.string().transform((value) => {
-    return Number(value.replace(/\D/g, ''))
+    return Number(value.replace(/[^0-9,]/g, '').replace(',', '.')) / 100
   }),
   typeOfInterestPeriod: z.string(),
   time: z.string().transform((value) => {
@@ -94,9 +95,8 @@ const CompoundInterestCalculator: React.FC = () => {
     if (typeOfInterestPeriod == 'yearly') {
       convertedInterest = EquivalenceOfFees(interest, 'yearlyToMonthly')
     } else if (typeOfInterestPeriod == 'monthly') {
-      convertedInterest = interest / 100
+      convertedInterest = interest
     }
-    console.log(typeOfInterestPeriod, typeOfTimePeriod)
 
     if (typeOfTimePeriod == 'yearly') {
       convertedTime = time * 12
@@ -112,13 +112,6 @@ const CompoundInterestCalculator: React.FC = () => {
         convertedTime
       )
     )
-
-    console.log({
-      initialValue,
-      monthlyContribution,
-      convertedInterest,
-      convertedTime,
-    })
 
     // chart calcs
     if (
@@ -180,7 +173,7 @@ const CompoundInterestCalculator: React.FC = () => {
             {...register('monthlyContribution')}
           />
           <div className="wrapper">
-            <StandardInput label="Juros" {...register('interest')} />
+            <PercentInput label="Juros" {...register('interest')} />
             <SelectInput
               label="Período"
               options={[
