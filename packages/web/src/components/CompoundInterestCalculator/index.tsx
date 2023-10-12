@@ -1,10 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import { CurrencyInput } from '../../components/Input/CurrencyInput'
 import { StandardInput } from '../../components/Input'
-import { CompoundInterestContext } from '../../contexts/CompoundInterestContext'
 import { Line } from 'react-chartjs-2'
-import { FvWithMonthlyAndInitial } from '../../utils/formulasFinancialMathematics'
+import {
+  FvWithMonthlyAndInitial,
+  Results,
+} from '../../utils/formulasFinancialMathematics'
 
 import {
   Chart as ChartJs,
@@ -19,6 +21,18 @@ import {
 
 import { formatDigits } from '../../utils/formatNumber'
 
+import './styles.scss'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Button } from '../Button'
+
+interface DataInterface {
+  fv: Array<Number>
+  totalInvested: Array<Number>
+  labels: Array<String>
+}
+
 ChartJs.register(
   LineElement,
   CategoryScale,
@@ -29,37 +43,49 @@ ChartJs.register(
   Filler
 )
 
-interface DataInterface {
-  fv: Array<Number>
-  totalInvested: Array<Number>
-  labels: Array<String>
-}
+const calcCompoundInterestSchema = z.object({
+  initialValue: z.string().transform((value) => {
+    return Number(value.replace(/\D/g, '')) / 100
+  }),
+  monthlyContribution: z.string().transform((value) => {
+    return Number(value.replace(/\D/g, '')) / 100
+  }),
+  interest: z.string().transform((value) => {
+    return Number(value.replace(/\D/g, ''))
+  }),
+  time: z.string().transform((value) => {
+    return Number(value.replace(/\D/g, ''))
+  }),
+})
 
-import './styles.scss'
+type calcCompoundInterestFormData = z.infer<typeof calcCompoundInterestSchema>
 
 const CompoundInterestCalculator: React.FC = () => {
+  const { register, handleSubmit } = useForm<calcCompoundInterestFormData>({
+    resolver: zodResolver(calcCompoundInterestSchema),
+  })
+
   const [data, setData] = useState<DataInterface>({
     fv: [0],
     totalInvested: [0],
     labels: ['0'],
   })
+  const [results, setResults] = useState<Results>()
 
-  const {
-    setInitialValue,
-    setMonthlyContribution,
-    setInterest,
-    setTime,
-    submit,
-    results,
+  const submitCalc: SubmitHandler<calcCompoundInterestFormData> = ({
     initialValue,
-    interest,
     monthlyContribution,
+    interest,
     time,
-  } = useContext(CompoundInterestContext)
+  }) => {
+    setResults(
+      FvWithMonthlyAndInitial(initialValue, monthlyContribution, interest, time)
+    )
 
-  useEffect(() => {
+    // chart calcs
     if (initialValue && monthlyContribution && interest && time) {
       let tempData = []
+      // calc yearly
       if (time >= 120 && time % 12 == 0) {
         for (let i = 0; i <= time / 12; i++) {
           tempData.push(
@@ -71,19 +97,9 @@ const CompoundInterestCalculator: React.FC = () => {
             )
           )
         }
-
-        setData({
-          fv: tempData.map((i) => {
-            return i.fv
-          }),
-          totalInvested: tempData.map((i) => {
-            return i.totalInvested
-          }),
-          labels: tempData.map((_i, key) => {
-            return key.toString()
-          }),
-        })
-      } else {
+      }
+      // calc monthly
+      else {
         for (let i = 0; i < time; i++) {
           tempData.push(
             FvWithMonthlyAndInitial(
@@ -94,43 +110,37 @@ const CompoundInterestCalculator: React.FC = () => {
             )
           )
         }
-        setData({
-          fv: tempData.map((i) => {
-            return i.fv
-          }),
-          totalInvested: tempData.map((i) => {
-            return i.totalInvested
-          }),
-          labels: tempData.map((_i, key) => {
-            return (key + 1).toString()
-          }),
-        })
       }
+      setData({
+        fv: tempData.map((i) => {
+          return i.fv
+        }),
+        totalInvested: tempData.map((i) => {
+          return i.totalInvested
+        }),
+        labels: tempData.map((_i, key) => {
+          return key.toString()
+        }),
+      })
     }
-  }, [results])
+  }
 
   return (
     <section className="CompoundInterest">
       <h1>Calculo de Juros Compostos</h1>
 
-      <div className="InputsWrapper">
-        <CurrencyInput setOutputValue={setInitialValue} label="Valor Inicial" />
-        <CurrencyInput
-          setOutputValue={setMonthlyContribution}
-          label="Aporte Mensal"
-        />
-        <StandardInput
-          inputType="number"
-          setOutputValue={setInterest}
-          label="Juros (ao mês)"
-        />
-        <StandardInput
-          inputType="number"
-          setOutputValue={setTime}
-          label="Período (em meses)"
-        />
-        <button onClick={submit}>teste</button>
-      </div>
+      <form onSubmit={handleSubmit(submitCalc)}>
+        <div className="InputsWrapper">
+          <CurrencyInput label="Valor Inicial" {...register('initialValue')} />
+          <CurrencyInput
+            label="Aporte Mensal"
+            {...register('monthlyContribution')}
+          />
+          <StandardInput label="Juros (ao mês)" {...register('interest')} />
+          <StandardInput label="Período (em meses)" {...register('time')} />
+        </div>
+        <Button type="submit">Calcular</Button>
+      </form>
 
       <div className="results">
         <p>
@@ -170,6 +180,13 @@ const CompoundInterestCalculator: React.FC = () => {
                 tension: 0.1,
               },
             ],
+          }}
+          options={{
+            scales: {
+              y: {
+                beginAtZero: true,
+              },
+            },
           }}
         />
       </div>
