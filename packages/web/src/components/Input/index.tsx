@@ -1,7 +1,5 @@
 import React, { forwardRef } from 'react'
 import './styles.scss'
-import { CurrencyInput } from './CurrencyInput'
-import { DateInput } from './DateInput'
 
 interface StandardInputProps extends React.HTMLProps<HTMLInputElement> {
   label: string
@@ -18,4 +16,4 @@ const StandardInput = forwardRef<HTMLInputElement, StandardInputProps>(
   }
 )
 
-export { StandardInput, Input }
+export { StandardInput }
