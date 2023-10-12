@@ -22,9 +22,11 @@
     pointer-events: none;
   }
 
-  input {
+  input,
+  select {
     color: var(--text);
     padding: 0.9rem;
+
     border: 2px solid #ccc;
     border-radius: var(--border-radius);
     width: 100%;
@@ -77,5 +79,12 @@
     &.CurrencyInput {
       text-align: right;
     }
+  }
+}
+
+.SelectInput {
+  background-color: var(--white);
+  option.default {
+    display: none;
   }
 }

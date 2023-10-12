@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 
 import './styles.scss'
-import { Transaction, TransactionType } from '../../components/Transaction'
+import { Transaction } from '../../components/Transaction'
 import { Button } from '../../components/Button'
 import { NewTransaction } from '../../components/NewTransaction'
 import { TransactionContext } from '../../contexts/TransactionContext'

@@ -33,9 +33,7 @@ export const FvWithMonthlyAndInitial = (
   T: number /* Interest per month */
 ) => {
   const fv = Number(
-    (
-      CompoundInterest(C, I / 100, T).fv + FvWithMonthly(R, I / 100, T).fv
-    ).toFixed(2)
+    (CompoundInterest(C, I, T).fv + FvWithMonthly(R, I, T).fv).toFixed(2)
   )
   const totalInvested = Number((C + R * T).toFixed(2))
   const totalDividends = Number((fv - totalInvested).toFixed(2))
@@ -43,7 +41,11 @@ export const FvWithMonthlyAndInitial = (
   return { fv, totalInvested, totalDividends }
 }
 
-export const EquivalenceOfFees = (i: number, to: 'monthly' | 'yearly') => {
-  if (to == 'yearly') return (1 + i) ^ (12 - 1)
-  else if (to == 'monthly') return (1 + i) ^ (1 / 12 - 1)
+export const EquivalenceOfFees = (
+  i: number,
+  to: 'yearlyToMonthly' | 'monthlyToYearly'
+) => {
+  if (to == 'monthlyToYearly') return (1 + i) ** 12 - 1
+  else if (to == 'yearlyToMonthly') return (1 + i) ** (1 / 12) - 1
+  else return 0
 }

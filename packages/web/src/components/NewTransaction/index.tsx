@@ -13,6 +13,7 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 
 import './styles.scss'
 import { TransactionContext } from '../../contexts/TransactionContext'
+import { SelectInput } from '../Input/SelectInput'
 
 const createTransactionSchema = z.object({
   type: z.string(),
@@ -35,6 +36,7 @@ const NewTransaction: React.FC = () => {
 
   const onSubmit: SubmitHandler<createTransactionFormData> = ({ ...props }) => {
     createTransaction({ ...props })
+    console.log({ ...props })
   }
 
   return (
@@ -42,7 +44,14 @@ const NewTransaction: React.FC = () => {
       <div className="inputs">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
-            <StandardInput label="Tipo" {...register('type')} />
+            <SelectInput
+              label="Tipo"
+              options={[
+                { name: 'Entrada', value: 'income' },
+                { name: 'Saída', value: 'expense' },
+              ]}
+              {...register('type')}
+            />
             <StandardInput label="Nome" {...register('name')} />
             <StandardInput label="Descrição" {...register('description')} />
             <CurrencyInput label="Valor" {...register('value')} />

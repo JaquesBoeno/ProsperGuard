@@ -4,6 +4,7 @@ import { CurrencyInput } from '../../components/Input/CurrencyInput'
 import { StandardInput } from '../../components/Input'
 import { Line } from 'react-chartjs-2'
 import {
+  EquivalenceOfFees,
   FvWithMonthlyAndInitial,
   Results,
 } from '../../utils/formulasFinancialMathematics'
@@ -26,6 +27,7 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '../Button'
+import { SelectInput } from '../Input/SelectInput'
 
 interface DataInterface {
   fv: Array<Number>
@@ -53,15 +55,21 @@ const calcCompoundInterestSchema = z.object({
   interest: z.string().transform((value) => {
     return Number(value.replace(/\D/g, ''))
   }),
+  typeOfInterestPeriod: z.string(),
   time: z.string().transform((value) => {
     return Number(value.replace(/\D/g, ''))
   }),
+  typeOfTimePeriod: z.string(),
 })
 
 type calcCompoundInterestFormData = z.infer<typeof calcCompoundInterestSchema>
 
 const CompoundInterestCalculator: React.FC = () => {
-  const { register, handleSubmit } = useForm<calcCompoundInterestFormData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<calcCompoundInterestFormData>({
     resolver: zodResolver(calcCompoundInterestSchema),
   })
 
@@ -77,22 +85,57 @@ const CompoundInterestCalculator: React.FC = () => {
     monthlyContribution,
     interest,
     time,
+    typeOfInterestPeriod,
+    typeOfTimePeriod,
   }) => {
+    let convertedInterest = 0
+    let convertedTime = 0
+
+    if (typeOfInterestPeriod == 'yearly') {
+      convertedInterest = EquivalenceOfFees(interest, 'yearlyToMonthly')
+    } else if (typeOfInterestPeriod == 'monthly') {
+      convertedInterest = interest / 100
+    }
+    console.log(typeOfInterestPeriod, typeOfTimePeriod)
+
+    if (typeOfTimePeriod == 'yearly') {
+      convertedTime = time * 12
+    } else if (typeOfTimePeriod == 'monthly') {
+      convertedTime = time
+    }
+
     setResults(
-      FvWithMonthlyAndInitial(initialValue, monthlyContribution, interest, time)
+      FvWithMonthlyAndInitial(
+        initialValue,
+        monthlyContribution,
+        convertedInterest,
+        convertedTime
+      )
     )
 
+    console.log({
+      initialValue,
+      monthlyContribution,
+      convertedInterest,
+      convertedTime,
+    })
+
     // chart calcs
-    if (initialValue && monthlyContribution && interest && time) {
+    if (
+      initialValue &&
+      monthlyContribution &&
+      convertedInterest &&
+      convertedTime
+    ) {
       let tempData = []
       // calc yearly
-      if (time >= 120 && time % 12 == 0) {
-        for (let i = 0; i <= time / 12; i++) {
+      if (convertedTime >= 120 && convertedTime % 12 == 0) {
+        for (let i = 0; i <= convertedTime / 12; i++) {
           tempData.push(
             FvWithMonthlyAndInitial(
               initialValue,
               monthlyContribution,
-              interest,
+              convertedInterest,
               i * 12
             )
           )
@@ -100,12 +143,12 @@ const CompoundInterestCalculator: React.FC = () => {
       }
       // calc monthly
       else {
-        for (let i = 0; i < time; i++) {
+        for (let i = 0; i < convertedTime; i++) {
           tempData.push(
             FvWithMonthlyAndInitial(
               initialValue,
               monthlyContribution,
-              interest,
+              convertedInterest,
               i
             )
           )
@@ -136,10 +179,30 @@ const CompoundInterestCalculator: React.FC = () => {
             label="Aporte Mensal"
             {...register('monthlyContribution')}
           />
-          <StandardInput label="Juros (ao mês)" {...register('interest')} />
-          <StandardInput label="Período (em meses)" {...register('time')} />
+          <div className="wrapper">
+            <StandardInput label="Juros" {...register('interest')} />
+            <SelectInput
+              label="Período"
+              options={[
+                { name: 'Mensal', value: 'monthly', selected: true },
+                { name: 'Anual', value: 'yearly' },
+              ]}
+              {...register('typeOfInterestPeriod')}
+            />
+          </div>
+          <div className="wrapper">
+            <StandardInput label="Período" {...register('time')} />
+            <SelectInput
+              label="Período"
+              options={[
+                { name: 'Meses', value: 'monthly', selected: true },
+                { name: 'Anos', value: 'yearly' },
+              ]}
+              {...register('typeOfTimePeriod')}
+            />
+          </div>
         </div>
-        <Button type="submit">Calcular</Button>
+        <Button type="submit" title="Calcular" />
       </form>
 
       <div className="results">
