@@ -4,11 +4,12 @@ import './styles.scss'
 interface Props {
   children: ReactNode
   onClick?: () => void
+  type?: 'button' | 'submit' | 'reset' | undefined
 }
 
-const Button: React.FC<Props> = ({ children, onClick }) => {
+const Button: React.FC<Props> = ({ children, onClick, type }) => {
   return (
-    <button onClick={onClick} className="ButtonComponent">
+    <button type={type} onClick={onClick} className="ButtonComponent">
       {children}
     </button>
   )

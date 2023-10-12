@@ -2,18 +2,23 @@
   margin-bottom: 2rem;
 
   .inputs {
-    display: grid;
-    width: 100%;
-    grid-template-columns: 2fr 5fr 15fr 4fr 3.1fr;
-    padding: 0.75rem 0;
-    gap: 1rem;
-
-    > div {
-      input {
-        padding: 0.5rem 0.9rem;
+    form {
+      > div {
+        display: grid;
         width: 100%;
-        border-radius: 0.5rem;
-        outline: 0;
+        grid-template-columns: 2fr 5fr 15fr 4fr 3.5fr;
+        grid-template-rows: 1fr;
+        padding: 0.75rem 0;
+        gap: 1rem;
+
+        > div {
+          input {
+            padding: 0.5rem 0.9rem;
+            width: 100%;
+            border-radius: 0.5rem;
+            outline: 0;
+          }
+        }
       }
     }
   }
