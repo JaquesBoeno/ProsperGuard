@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 
-import { CurrencyInput } from '../../components/Input/CurrencyInput'
-import { StandardInput } from '../../components/Input'
+import { Input } from '../../components/Input'
+import { SelectInput } from '../Input/SelectInput'
+import { Button } from '../Button'
+
 import { Line } from 'react-chartjs-2'
 import {
   EquivalenceOfFees,
@@ -22,14 +24,11 @@ import {
 
 import { formatDigits } from '../../utils/formatNumber'
 
-import './styles.scss'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button } from '../Button'
-import { SelectInput } from '../Input/SelectInput'
-import { PercentInput } from '../Input/PercentInput'
 
+import './styles.scss'
 interface DataInterface {
   fv: Array<Number>
   totalInvested: Array<Number>
@@ -167,13 +166,18 @@ const CompoundInterestCalculator: React.FC = () => {
 
       <form onSubmit={handleSubmit(submitCalc)}>
         <div className="InputsWrapper">
-          <CurrencyInput label="Valor Inicial" {...register('initialValue')} />
-          <CurrencyInput
+          <Input
+            type="currency"
+            label="Valor Inicial"
+            {...register('initialValue')}
+          />
+          <Input
+            type="currency"
             label="Aporte Mensal"
             {...register('monthlyContribution')}
           />
           <div className="wrapper">
-            <PercentInput label="Juros" {...register('interest')} />
+            <Input type="percent" label="Juros" {...register('interest')} />
             <SelectInput
               label="Período"
               options={[
@@ -184,7 +188,7 @@ const CompoundInterestCalculator: React.FC = () => {
             />
           </div>
           <div className="wrapper">
-            <StandardInput label="Período" {...register('time')} />
+            <Input type="number" label="Período" {...register('time')} />
             <SelectInput
               label="Período"
               options={[
