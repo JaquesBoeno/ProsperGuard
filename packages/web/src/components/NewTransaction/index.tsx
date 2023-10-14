@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 
 // Components
-import { StandardInput } from '../Input'
+import { Input, StandardInput } from '../Input'
 import { CurrencyInput } from '../Input/CurrencyInput'
 import { DateInput } from '../Input/DateInput'
 import { Button } from '../Button'
@@ -40,6 +40,7 @@ const NewTransaction: React.FC = () => {
 
   return (
     <div className="NewTransaction">
+      <h2>Criar transação</h2>
       <div className="inputs">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
@@ -51,13 +52,15 @@ const NewTransaction: React.FC = () => {
               ]}
               {...register('type')}
             />
-            <StandardInput label="Nome" {...register('name')} />
-            <StandardInput label="Descrição" {...register('description')} />
-            <CurrencyInput label="Valor" {...register('value')} />
-            <DateInput label="Data" {...register('date')} />
+            <Input type="text" label="Nome" {...register('name')} />
+            <Input type="text" label="Descrição" {...register('description')} />
+            <Input type="currency" label="Valor" {...register('value')} />
+            <Input type="date" label="Data" {...register('date')} />
           </div>
-          <Button color="green" type="submit" title="Adicionar transação" />
-          <Button color="red" type="button" title="Cancelar" />
+          <div className="buttons">
+            <Button color="red" type="reset" title="Cancelar" />
+            <Button color="green" type="submit" title="Adicionar transação" />
+          </div>
         </form>
       </div>
     </div>
