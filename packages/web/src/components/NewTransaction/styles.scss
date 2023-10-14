@@ -8,7 +8,7 @@
         width: 100%;
         grid-template-columns: 2.75fr 5fr 15fr 4fr 3.5fr;
         grid-template-rows: 1fr;
-        padding: 0.75rem 0;
+        padding: 0.5rem 0;
         gap: 1rem;
 
         > div {
@@ -22,8 +22,44 @@
         }
       }
 
-      button {
-        margin-right: 1rem;
+      .tagsRow {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+
+        .tag {
+          display: grid;
+          grid-template-columns: auto min-content;
+          gap: 0.5rem;
+
+          button {
+            font-size: 0rem;
+            line-height: 0;
+            padding: 0;
+            padding: calc((2.5rem - 1.5rem) / 2);
+
+            svg {
+              font-size: 1.5rem;
+            }
+          }
+        }
+
+        &:empty {
+          padding: 0;
+        }
+      }
+
+      .buttons {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+
+        button:first-child {
+          text-align: center;
+        }
+
+        button:last-child {
+          margin-left: 1rem;
+        }
       }
     }
   }

@@ -199,7 +199,7 @@ const CompoundInterestCalculator: React.FC = () => {
             />
           </div>
         </div>
-        <Button type="submit" title="Calcular" />
+        <Button type="submit">Calcular</Button>
       </form>
 
       <div className="results">

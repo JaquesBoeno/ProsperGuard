@@ -45,7 +45,7 @@ const EquivalenceOfFees: React.FC = () => {
           ]}
           {...register('to')}
         />
-        <Button title="Converter" type="submit" />
+        <Button type="submit">Converter</Button>
         <div>
           <p>Taxa Convertida: {result && (result * 100).toFixed(2)} %</p>
         </div>
