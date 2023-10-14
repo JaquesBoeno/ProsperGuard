@@ -52,13 +52,14 @@
         display: flex;
         justify-content: space-between;
         width: 100%;
+        > div {
+          span {
+            color: var(--red);
+          }
 
-        button:first-child {
-          text-align: center;
-        }
-
-        button:last-child {
-          margin-left: 1rem;
+          button:first-child {
+            margin-right: 1rem;
+          }
         }
       }
     }

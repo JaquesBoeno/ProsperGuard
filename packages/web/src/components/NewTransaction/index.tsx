@@ -49,7 +49,7 @@ const NewTransaction: React.FC = () => {
     handleSubmit,
     control,
     reset,
-    formState: errors,
+    formState: { errors },
   } = useForm<createTransactionFormData>({
     resolver: zodResolver(createTransactionSchema),
   })
@@ -73,21 +73,31 @@ const NewTransaction: React.FC = () => {
     <div className="NewTransaction">
       <h2>Criar transação</h2>
       <div className="inputs">
-        <p>{JSON.stringify(errors.errors)}</p>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
             <SelectInput
               label="Tipo"
+              errors={errors.type?.message}
               options={[
                 { name: '⬇️ Entrada', value: 'income' },
                 { name: '⬆️ Saída', value: 'expense' },
               ]}
               {...register('type')}
             />
-            <Input type="text" label="Nome" {...register('name')} />
-            <Input type="text" label="Descrição" {...register('description')} />
-            <Input type="currency" label="Valor" {...register('value')} />
-            <Input type="date" label="Data" {...register('date')} />
+            <Input type="text" label="Nome" errors={errors.name?.message} {...register('name')} />
+            <Input
+              type="text"
+              label="Descrição"
+              errors={errors.description?.message}
+              {...register('description')}
+            />
+            <Input
+              type="currency"
+              label="Valor"
+              errors={errors.value?.message}
+              {...register('value')}
+            />
+            <Input type="date" label="Data" errors={errors.date?.message} {...register('date')} />
           </div>
           <div className="tagsRow">
             {fields.map((field, index) => {
@@ -109,13 +119,12 @@ const NewTransaction: React.FC = () => {
             })}
           </div>
           <div className="buttons">
-            <Button onClick={appendTag}>Adicionar Tag +</Button>
             <div>
-              <Button
-                color="red"
-                type="reset"
-                onClick={() => reset({ type: '', tags: [] })}
-              >
+              <Button onClick={appendTag}>Adicionar Tag +</Button>
+              <span>{errors.tags?.message}</span>
+            </div>
+            <div>
+              <Button color="red" type="reset" onClick={() => reset({ type: '', tags: [] })}>
                 Cancelar
               </Button>
               <Button color="green" type="submit">
