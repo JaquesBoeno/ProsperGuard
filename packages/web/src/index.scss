@@ -6,6 +6,7 @@
   padding: 0;
   box-sizing: border-box;
   font-family: Nunito;
+  user-select: none;
 }
 
 :root {
@@ -45,6 +46,10 @@
 body {
   background: var(--background);
   color: var(--text);
+}
+
+img {
+  vertical-align: middle;
 }
 
 body,
