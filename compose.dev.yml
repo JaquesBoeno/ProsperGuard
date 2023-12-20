@@ -7,26 +7,26 @@ services:
       dockerfile: dockerfile.dev
     container_name: finance-manager-frontend
     restart: always
-    volumes:
-      - ./packages/web:/app
     ports:
       - 8080:8080
     networks:
       - frontend
+    volumes:
+      - ./packages/web:/app
 
-  # db:
-  #   image: mongo:jammy
-  #   container_name: finance-manager-database
-  #   restart: always
-  #   ports:
-  #     - 27017:27017
-  #   environment:
-  #     MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-  #     MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-  #   networks:
-  #     - backend
-  #   volumes:
-  #     - database:/data/db
+  database:
+    image: mongo:jammy
+    container_name: finance-manager-database
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    networks:
+      - backend
+    volumes:
+      - database:/data/db
 
 networks:
   frontend:
