@@ -1,3 +1,7 @@
+## Geral
+
+- [ ] create a git hook for organizer commits, with go.
+
 ## Front-End
 
 - [ ] improve the layout
