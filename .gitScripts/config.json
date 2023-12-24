@@ -6,7 +6,8 @@
       "label": "What scope of this change? (e.g. backend or frontend)",
       "options": [
         { "name": "front-end", "desc": "Change in front-end scope" },
-        { "name": "back-end", "desc": "Change in back-end scope" }
+        { "name": "back-end", "desc": "Change in back-end scope" },
+        { "name": "general", "desc": "Changes in the overall scope of the project" }
       ]
     },
     {
