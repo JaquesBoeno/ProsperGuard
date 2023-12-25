@@ -4,6 +4,7 @@ import { SideBar } from './components/SideBar'
 import { Calcs } from './pages/Calcs'
 import { Overview } from './pages/Overview'
 import { TransactionContextProvider } from './contexts/TransactionContext'
+import { Transaction } from './pages/Transaction'
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
                 </TransactionContextProvider>
               }
             />
+            <Route path="/transactions" element={<Transaction />} />
             <Route path="/calcs" element={<Calcs />} />
           </Routes>
         </div>

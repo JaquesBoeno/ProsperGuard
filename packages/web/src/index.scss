@@ -1,11 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500;600;700;800;900;1000&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap");
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Nunito;
+  font-family: "poppins";
   user-select: none;
 }
 
@@ -21,7 +22,7 @@
   --blue-dark: #4953b8;
   --blue-twitter: #2aa9e0;
 
-  --border-radius: 0.75rem;
+  --border-radius: 0.5rem;
   --transition-time: 200ms;
   --box-shadow: 0px 0px 60px 0px rgba(0, 0, 0, 0.05);
 
@@ -77,6 +78,7 @@ h3,
 h4,
 h5,
 h6 {
+  font-family: nunito;
   font-weight: 700;
 }
 
