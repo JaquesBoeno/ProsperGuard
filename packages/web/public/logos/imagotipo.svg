@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="323.65918mm"
+   width="306.259mm"
    height="72.662384mm"
-   viewBox="0 0 323.65918 72.662384"
+   viewBox="0 0 306.259 72.662384"
    version="1.1"
    id="svg1"
    xmlns="http://www.w3.org/2000/svg"
@@ -14,36 +14,51 @@
   <g
      id="layer1"
      transform="translate(-15.467678,-16.948459)">
-    <path
-       style="fill:none;fill-opacity:1;stroke:#673ab7;stroke-width:9.04454;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
-       id="path2"
-       d="M 93.890203,164.90809 39.3426,133.41502 c -4.049545,-2.338 -7.332349,-8.02399 -7.332349,-12.7 l -2e-6,-62.986144 c 0,-4.676011 3.282804,-10.361995 7.332348,-12.700001 L 93.890199,13.535801 c 4.049544,-2.338006 10.615151,-2.338006 14.664701,-10e-7 l 54.5476,31.493072 c 4.04954,2.338005 7.33235,8.023989 7.33235,12.7 l 0,62.986148 c 0,4.67601 -3.2828,10.36199 -7.33235,12.7 l -54.5476,31.49307 c -4.04954,2.33801 -10.615153,2.33801 -14.664697,0 z"
-       transform="matrix(0.44225557,0,0,0.44225557,3.3109671,13.820747)" />
-    <path
-       id="path12"
-       style="fill:none;fill-opacity:1;stroke:#673ab7;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
-       d="M 48.077037,39.156334 V 53.279483 A 14.123336,14.123336 0 0 1 33.953888,39.156334 Z" />
-    <path
-       id="path8"
-       style="fill:none;fill-opacity:1;stroke:#673ab7;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
-       d="M 48.077037,53.279483 A 14.123336,14.123336 0 0 1 62.200519,67.402965 H 48.077037 Z" />
-    <path
-       id="path15"
-       style="fill:none;fill-opacity:1;stroke:#673ab7;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
-       d="M 48.07737,39.156334 V 53.279483 A 14.123336,14.123336 0 0 0 62.200519,39.156334 Z" />
-    <path
-       id="path16"
-       style="fill:none;fill-opacity:1;stroke:#673ab7;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
-       d="M 48.07737,53.279483 A 14.123336,14.123336 0 0 0 33.953888,67.402965 H 48.07737 Z" />
+    <g
+       id="g2">
+      <path
+         style="fill:none;fill-opacity:1;stroke:#673ab7;stroke-width:9.04454;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+         id="path2"
+         d="M 93.890203,164.90809 39.3426,133.41502 c -4.049545,-2.338 -7.332349,-8.02399 -7.332349,-12.7 l -2e-6,-62.986144 c 0,-4.676011 3.282804,-10.361995 7.332348,-12.700001 L 93.890199,13.535801 c 4.049544,-2.338006 10.615151,-2.338006 14.664701,-10e-7 l 54.5476,31.493072 c 4.04954,2.338005 7.33235,8.023989 7.33235,12.7 v 62.986148 c 0,4.67601 -3.2828,10.36199 -7.33235,12.7 l -54.5476,31.49307 c -4.04954,2.33801 -10.615153,2.33801 -14.664697,0 z"
+         transform="matrix(0.44225557,0,0,0.44225557,3.3109671,13.820747)" />
+      <g
+         id="g1">
+        <path
+           id="path12"
+           style="fill:none;fill-opacity:1;stroke:#673ab7;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           d="M 48.077037,39.156334 V 53.279483 A 14.123336,14.123336 0 0 1 33.953888,39.156334 Z" />
+        <path
+           id="path8"
+           style="fill:none;fill-opacity:1;stroke:#673ab7;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           d="M 48.077037,53.279483 A 14.123336,14.123336 0 0 1 62.200519,67.402965 H 48.077037 Z" />
+        <path
+           id="path15"
+           style="fill:none;fill-opacity:1;stroke:#673ab7;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           d="M 48.07737,39.156334 V 53.279483 A 14.123336,14.123336 0 0 0 62.200519,39.156334 Z" />
+        <path
+           id="path16"
+           style="fill:none;fill-opacity:1;stroke:#673ab7;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           d="M 48.07737,53.279483 A 14.123336,14.123336 0 0 0 33.953888,67.402965 H 48.07737 Z" />
+      </g>
+    </g>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:28.505px;line-height:0.9;font-family:Comfortaa;-inkscape-font-specification:Comfortaa;fill:#673ab7;fill-opacity:1;stroke:#673ab7;stroke-width:1.32292;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
-       x="93.883415"
-       y="60.990253"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:39.5111px;line-height:0.9;font-family:Comfortaa;-inkscape-font-specification:Comfortaa;fill:#673ab7;fill-opacity:1;stroke:#673ab7;stroke-width:1.76233;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       x="78.011894"
+       y="66.239288"
        id="text17"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:28.505px;line-height:0.9;font-family:Comfortaa;-inkscape-font-specification:'Comfortaa Bold';fill:#673ab7;fill-opacity:1;stroke:#673ab7;stroke-width:1.32292;stroke-dasharray:none;stroke-opacity:1"
-         x="93.883415"
-         y="60.990253"
-         id="tspan1">Finace Manager</tspan></text>
+         id="tspan7"
+         x="78.011894"
+         y="66.239288" /></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:39.511px;line-height:0.9;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro';fill:#673ab7;stroke:#673ab7;stroke-width:1.32292;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+       x="93.792145"
+       y="66.00219"
+       id="text8"><tspan
+         style="stroke-width:1.32292"
+         x="93.792145"
+         y="66.00219"
+         id="tspan9">ProsperGuard</tspan></text>
   </g>
 </svg>
