@@ -1,16 +1,25 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import './styles.scss'
-import { MdLogout } from 'react-icons/md'
+import { FiSidebar } from 'react-icons/fi'
+import { MdLogout, MdOutlineDarkMode } from 'react-icons/md'
 import { LuHome, LuCalculator } from 'react-icons/lu'
 import { GrTransaction } from 'react-icons/gr'
 import { Link } from 'react-router-dom'
 
 const SideBar: React.FC = () => {
+  const [visible, setVisible] = useState(true)
+  const toggleVisible = () => {
+    setVisible(!visible)
+  }
   return (
-    <aside>
+    <aside className={'closed-' + visible}>
+      <button className="indicator" onClick={toggleVisible}>
+        <FiSidebar />
+      </button>
       <div className="TopBox">
-        <img src="/logos/imagotipo.svg" alt="Finance Manager" />
+        <img className="imagotipo" src="/logos/imagotipo.svg" alt="Finance Manager" />
+        <img className="isotipo" src="/logos/isotipo.svg" alt="Finance Manager" />
         <ul>
           <li>
             <Link to="/">
@@ -32,10 +41,12 @@ const SideBar: React.FC = () => {
           </li>
         </ul>
       </div>
-      <button className="Logout">
-        <MdLogout />
-        <span>Logout</span>
-      </button>
+      <div className="BottomBox">
+        <button className="Logout">
+          <MdLogout />
+          <span>Logout</span>
+        </button>
+      </div>
     </aside>
   )
 }

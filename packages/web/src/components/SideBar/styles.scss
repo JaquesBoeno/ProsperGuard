@@ -1,12 +1,64 @@
 aside {
+  position: relative;
   height: 100%;
-  padding: 2rem;
   color: var(--text);
   background-color: #fff;
   box-shadow: var(--box-shadow);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  button.indicator {
+    background-color: transparent;
+    border: 0;
+    position: absolute;
+    top: 50%;
+    font-size: 0;
+    left: 100%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border-radius: 100%;
+    box-shadow: var(--box-shadow);
+    width: 3rem;
+    height: 3rem;
+  }
+
+  &.closed-false {
+    .TopBox {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      img {
+        width: 3rem;
+        &.isotipo {
+          visibility: visible;
+          display: initial;
+        }
+        &.imagotipo {
+          visibility: hidden;
+          display: none;
+        }
+      }
+
+      ul li a {
+        width: fit-content;
+        span {
+          visibility: hidden;
+          display: none;
+        }
+      }
+    }
+
+    .BottomBox {
+      button {
+        width: fit-content;
+        span {
+          visibility: hidden;
+          display: none;
+        }
+      }
+    }
+  }
 
   svg {
     font-size: 1.5rem;
@@ -16,16 +68,30 @@ aside {
   span {
     font-size: 1rem;
     margin-left: 1rem;
-    font-weight: 700;
+    font-weight: 500;
+  }
+
+  > div {
+    padding: 1rem;
   }
 
   .TopBox {
+    display: flex;
+    flex-direction: column;
     img {
-      width: 12.5rem;
+      height: 3rem;
+      &.isotipo {
+        visibility: hidden;
+        display: none;
+      }
+      &.imagotipo {
+        visibility: visible;
+        display: initial;
+      }
     }
 
     ul {
-      margin-top: 2rem;
+      margin-top: 1rem;
       list-style-type: none;
 
       li {
@@ -43,26 +109,49 @@ aside {
           }
 
           &:hover {
-            background-color: rgba(0, 0, 0, 0.05);
+            background-color: var(--secondary);
+            color: var(--white);
+            svg {
+              path {
+                stroke: var(--white);
+              }
+            }
           }
         }
       }
     }
   }
 
-  .Logout {
-    display: flex;
-    align-items: center;
-    transition: var(--transition-time);
-    background-color: transparent;
-    border: 0;
-    padding: 0.75rem;
-    color: inherit;
-    border-radius: var(--border-radius);
-
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.05);
-      color: var(--red);
+  .BottomBox {
+    border-top: 1px solid #ccc;
+    button {
+      width: 100%;
+      border: 0;
+      display: flex;
+      align-items: center;
+      background-color: transparent;
+      padding: 0.75rem;
+      color: inherit;
+      border-radius: var(--border-radius);
+      transition: var(--transition-time);
+    }
+    .Logout {
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+        color: var(--white);
+        background-color: var(--red);
+      }
+    }
+    .theme {
+      &:hover {
+        background-color: var(--secondary);
+        color: var(--white);
+        svg {
+          path {
+            stroke: var(--white);
+          }
+        }
+      }
     }
   }
 }
