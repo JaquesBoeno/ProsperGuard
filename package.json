@@ -1,0 +1,22 @@
+{
+  "name": "prosper-guard",
+  "version": "0.0.1",
+  "repository": "git@github.com:JaquesBoeno/ProsperGuard.git",
+  "author": "JaquesBoeno <jaquesboeno@proton.me>",
+  "license": "GPL-3.0",
+  "scripts": {
+    "commitlint": "commitlint --edit"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^18.4.4",
+    "@commitlint/config-conventional": "^18.4.4",
+    "commitizen": "^4.3.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "husky": "^8.0.3"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
