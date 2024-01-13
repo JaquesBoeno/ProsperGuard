@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  web-client:
+    build:
+      context: ./applications/web-client/
+      dockerfile: build.dockerfile
+    container_name: prosper-guard-web
+    restart: always
+    networks:
+      - frontend
+    ports:
+      - 3080:80
+
+networks:
+  frontend:
+  backend:
+
+volumes:
+  database:

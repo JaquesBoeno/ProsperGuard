@@ -1,4 +1,5 @@
-FROM node:21-alpine3.18
+# react stage
+FROM node:21-alpine3.18 as builder
 
 WORKDIR /app
 
@@ -11,6 +12,13 @@ COPY . .
 
 RUN yarn build
 
-EXPOSE 8080
+# nginx stage
+FROM nginx:1.19.0
 
-CMD [ "yarn", "dev" ]
+WORKDIR /usr/share/nginx/html
+
+RUN rm -rf ./*
+
+COPY --from=builder /app/dist .
+
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
