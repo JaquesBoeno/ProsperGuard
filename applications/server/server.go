@@ -10,7 +10,7 @@ import (
 	"github.com/JaquesBoeno/ProsperGuard/server/graph"
 )
 
-const defaultPort = "4090"
+const defaultPort = "3070"
 
 func main() {
 	port := os.Getenv("PORT")
@@ -23,6 +23,7 @@ func main() {
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)
 
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	log.Printf("🚀 server is startup")
+	log.Printf("🚀 endpoint query: http://localhost:%s/query", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
