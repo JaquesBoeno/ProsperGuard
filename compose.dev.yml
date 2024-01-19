@@ -8,8 +8,6 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-    ports:
-      - 3060:27017
     networks:
       - prosper-guard-backend
     volumes:
@@ -25,6 +23,7 @@ services:
       - 3070:${BACKEND_PORT}
     environment:
       PORT: ${BACKEND_PORT}
+      DATABASE_URL: ${DATABASE_URL}
     networks:
       - prosper-guard-backend
       - prosper-guard-frontend
