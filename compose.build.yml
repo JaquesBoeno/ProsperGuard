@@ -1,6 +1,21 @@
 version: '3.8'
 
 services:
+  server:
+    build:
+      context: ./applications/server/
+      dockerfile: build.dockerfile
+    container_name: prosper-guard-server
+    restart: always
+    ports:
+      - 3070:${BACKEND_PORT}
+    environment:
+      PORT: ${BACKEND_PORT}
+      DATABASE_URL: ${DATABASE_URL}
+    networks:
+      - prosper-guard-backend
+      - prosper-guard-frontend
+
   web-client:
     build:
       context: ./applications/web-client/
@@ -8,13 +23,13 @@ services:
     container_name: prosper-guard-web
     restart: always
     networks:
-      - frontend
+      - prosper-guard-frontend
     ports:
       - 3080:80
 
 networks:
-  frontend:
-  backend:
+  prosper-guard-frontend:
+  prosper-guard-backend:
 
 volumes:
-  database:
+  prosper-guard-database:
