@@ -4,9 +4,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/99designs/gqlgen/graphql/handler"
 	// "github.com/99designs/gqlgen/graphql/playground"
-	"github.com/JaquesBoeno/ProsperGuard/server/graph"
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/JaquesBoeno/ProsperGuard/server/internal/graph"
+	resolver "github.com/JaquesBoeno/ProsperGuard/server/internal/resolver"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -17,7 +18,7 @@ type GQLServer struct {
 
 func (g *GQLServer) Start() {
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{
-		Resolvers: &graph.Resolver{DB: g.Database},
+		Resolvers: &resolver.Resolver{DbClient: g.Database},
 	}))
 
 	// http.Handle("/", playground.Handler("GraphQL playground", "/query"))

@@ -14,7 +14,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/JaquesBoeno/ProsperGuard/server/graph/model"
+	"github.com/JaquesBoeno/ProsperGuard/server/internal/graph/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -353,7 +353,7 @@ func (ec *executionContext) field_Mutation_createUser_args(ctx context.Context, 
 	var arg0 model.CreateNewUser
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateNewUser2githubᚗcomᚋJaquesBoenoᚋProsperGuardᚋserverᚋgraphᚋmodelᚐCreateNewUser(ctx, tmp)
+		arg0, err = ec.unmarshalNCreateNewUser2githubᚗcomᚋJaquesBoenoᚋProsperGuardᚋserverᚋinternalᚋgraphᚋmodelᚐCreateNewUser(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -443,7 +443,7 @@ func (ec *executionContext) _Mutation_createUser(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖgithubᚗcomᚋJaquesBoenoᚋProsperGuardᚋserverᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgithubᚗcomᚋJaquesBoenoᚋProsperGuardᚋserverᚋinternalᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -508,7 +508,7 @@ func (ec *executionContext) _Query_users(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.([]*model.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚕᚖgithubᚗcomᚋJaquesBoenoᚋProsperGuardᚋserverᚋgraphᚋmodelᚐUserᚄ(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚕᚖgithubᚗcomᚋJaquesBoenoᚋProsperGuardᚋserverᚋinternalᚋgraphᚋmodelᚐUserᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_users(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3735,7 +3735,7 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalNCreateNewUser2githubᚗcomᚋJaquesBoenoᚋProsperGuardᚋserverᚋgraphᚋmodelᚐCreateNewUser(ctx context.Context, v interface{}) (model.CreateNewUser, error) {
+func (ec *executionContext) unmarshalNCreateNewUser2githubᚗcomᚋJaquesBoenoᚋProsperGuardᚋserverᚋinternalᚋgraphᚋmodelᚐCreateNewUser(ctx context.Context, v interface{}) (model.CreateNewUser, error) {
 	res, err := ec.unmarshalInputCreateNewUser(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -3817,11 +3817,11 @@ func (ec *executionContext) marshalNString2ᚕstringᚄ(ctx context.Context, sel
 	return ret
 }
 
-func (ec *executionContext) marshalNUser2githubᚗcomᚋJaquesBoenoᚋProsperGuardᚋserverᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2githubᚗcomᚋJaquesBoenoᚋProsperGuardᚋserverᚋinternalᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {
 	return ec._User(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋJaquesBoenoᚋProsperGuardᚋserverᚋgraphᚋmodelᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋJaquesBoenoᚋProsperGuardᚋserverᚋinternalᚋgraphᚋmodelᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.User) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -3845,7 +3845,7 @@ func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋJaquesBoenoᚋPros
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNUser2ᚖgithubᚗcomᚋJaquesBoenoᚋProsperGuardᚋserverᚋgraphᚋmodelᚐUser(ctx, sel, v[i])
+			ret[i] = ec.marshalNUser2ᚖgithubᚗcomᚋJaquesBoenoᚋProsperGuardᚋserverᚋinternalᚋgraphᚋmodelᚐUser(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -3865,7 +3865,7 @@ func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋJaquesBoenoᚋPros
 	return ret
 }
 
-func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋJaquesBoenoᚋProsperGuardᚋserverᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋJaquesBoenoᚋProsperGuardᚋserverᚋinternalᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
