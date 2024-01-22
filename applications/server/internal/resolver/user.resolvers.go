@@ -6,20 +6,33 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/JaquesBoeno/ProsperGuard/server/internal/controller"
 	"github.com/JaquesBoeno/ProsperGuard/server/internal/graph"
 	"github.com/JaquesBoeno/ProsperGuard/server/internal/graph/model"
 )
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateNewUser) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
+	userController := controller.DIUsers{
+		DBClient: r.DbClient,
+	}
+
+	user, err := userController.CreateUser(input.Name, input.Email, input.Password)
+
+	return user, err
+	// panic(fmt.Errorf("not implemented: Users - users"))
 }
 
 // Users is the resolver for the users field.
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
-	panic(fmt.Errorf("not implemented: Users - users"))
+	userController := controller.DIUsers{
+		DBClient: r.DbClient,
+	}
+
+	users, err := userController.GetAllUser()
+
+	return users, err
 }
 
 // Mutation returns graph.MutationResolver implementation.
