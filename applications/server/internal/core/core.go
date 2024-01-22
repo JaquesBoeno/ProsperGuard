@@ -1,26 +1,12 @@
 package core
 
-import (
-	"os"
-
-	"github.com/JaquesBoeno/ProsperGuard/server/internal/router"
-	"github.com/gofiber/fiber/v3"
-)
+import "os"
 
 func Start() {
+	DbURL := os.Getenv("DATABASE_URL")
 	port := os.Getenv("PORT")
-	app := fiber.New(fiber.Config{
-		CaseSensitive: false,
-		StrictRouting: true,
-		ServerHeader:  "Fiber",
-		AppName:       "ProsperGuard",
-	})
 
-	router := router.Router{
-		App: app,
-	}
+	DbClient := Database(DbURL)
 
-	router.Start()
-
-	app.Listen(":" + port)
+	StartServer(DbClient, port)
 }
