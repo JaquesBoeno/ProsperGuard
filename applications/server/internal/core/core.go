@@ -1,29 +1,23 @@
 package core
 
-import "os"
+import (
+	"github.com/JaquesBoeno/ProsperGuard/server/internal/router"
+	"github.com/gofiber/fiber/v3"
+)
 
-const defaultPort = "3070"
+func Start() {
+	app := fiber.New(fiber.Config{
+		CaseSensitive: false,
+		StrictRouting: true,
+		ServerHeader:  "Fiber",
+		AppName:       "ProsperGuard",
+	})
 
-func Core() {
-	dbURL := os.Getenv("DATABASE_URL")
-
-	dbApp := Database{
-		DatabaseURL: dbURL,
-		Database:    "ProsperGuard",
+	router := router.Router{
+		App: app,
 	}
 
-	dbClient := dbApp.Connect()
+	router.Start()
 
-	port := os.Getenv("PORT")
-
-	if port == "" {
-		port = defaultPort
-	}
-
-	graphql := GQLServer{
-		Port:     port,
-		Database: dbClient,
-	}
-
-	graphql.Start()
+	app.Listen(":3060")
 }
