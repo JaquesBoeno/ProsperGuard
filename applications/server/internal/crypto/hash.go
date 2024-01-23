@@ -18,6 +18,9 @@ type params struct {
 	keyLength  uint32
 }
 
+// Hash string Template
+// $a=argon2ID$v=<version>$m=<memory>$i=<interactions>$t=<threads>$s=<salt>$h=<hash>
+
 func HashPassword(pass string) string {
 	p := &params{
 		memory:     64 * 1024,
