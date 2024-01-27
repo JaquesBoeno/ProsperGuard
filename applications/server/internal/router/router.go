@@ -11,6 +11,7 @@ import (
 type Router struct {
 	App      *fiber.App
 	DbClient *ent.Client
+	Ctx      context.Context
 }
 
 func (r Router) Start() {
@@ -19,11 +20,20 @@ func (r Router) Start() {
 		return c.SendString("Hello!")
 	})
 
+	// Users
 	userController := controller.UserController{
 		DbClient: r.DbClient,
-		Ctx:      context.Background(),
+		Ctx:      r.Ctx,
 	}
 
 	r.App.Post("/user/create", userController.CreateUser)
 	r.App.Get("/user/getAll", userController.GetAllUser)
+
+	// Transactions
+	transactionController := controller.TransactionController{
+		DbClient: r.DbClient,
+		Ctx:      r.Ctx,
+	}
+	r.App.Post("/transaction/create", transactionController.CreateTransaction)
+	r.App.Get("/transaction/getFromUser", transactionController.GetAllTransactionsFromOneUser)
 }

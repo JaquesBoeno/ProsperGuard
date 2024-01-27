@@ -45,7 +45,7 @@ User
 Transaction
 
 - id: UUID
-- type: string
+- type: "expense" | "income"
 - name
 - description
 - value
