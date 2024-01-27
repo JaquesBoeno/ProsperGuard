@@ -1,12 +1,12 @@
 package core
 
 import (
+	"github.com/JaquesBoeno/ProsperGuard/server/ent"
 	"github.com/JaquesBoeno/ProsperGuard/server/internal/router"
 	"github.com/gofiber/fiber/v3"
-	"github.com/jackc/pgx/v5"
 )
 
-func StartServer(DbClient *pgx.Conn, port string) {
+func StartServer(DbClient *ent.Client, port string) {
 	app := fiber.New(fiber.Config{
 		CaseSensitive: false,
 		StrictRouting: true,
@@ -15,7 +15,8 @@ func StartServer(DbClient *pgx.Conn, port string) {
 	})
 
 	router := router.Router{
-		App: app,
+		App:      app,
+		DbClient: DbClient,
 	}
 
 	router.Start()

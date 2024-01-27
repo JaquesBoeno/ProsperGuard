@@ -3,10 +3,10 @@ package core
 import "os"
 
 func Start() {
-	DbURL := os.Getenv("DATABASE_URL")
+	DbUrl := os.Getenv("DATABASE_URL")
 	port := os.Getenv("PORT")
 
-	DbClient := Database(DbURL)
+	DbClient := Database(DbUrl)
 
 	StartServer(DbClient, port)
 }
