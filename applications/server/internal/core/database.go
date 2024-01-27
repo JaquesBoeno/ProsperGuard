@@ -12,8 +12,12 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
+type database struct {
+	DatabaseURL string
+}
+
 // Open new connection
-func Open(databaseUrl string) (*ent.Client, error) {
+func open(databaseUrl string) (*ent.Client, error) {
 	db, err := sql.Open("pgx", databaseUrl)
 
 	// Create an ent.Driver from `db`.
@@ -21,13 +25,11 @@ func Open(databaseUrl string) (*ent.Client, error) {
 	return ent.NewClient(ent.Driver(drv)), err
 }
 
-func Database(DbUrl string) *ent.Client {
-	client, err := Open(DbUrl)
-
+func (d *database) Start() *ent.Client {
+	client, err := open(d.DatabaseURL)
 	if err != nil {
 		log.Fatalf("failed opening connection to postgres: %v", err)
 	}
-	defer client.Close()
 
 	// Run the auto migration tool.
 	if err := client.Schema.Create(context.Background()); err != nil {
