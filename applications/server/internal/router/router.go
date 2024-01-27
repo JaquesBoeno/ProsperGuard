@@ -25,4 +25,5 @@ func (r Router) Start() {
 	}
 
 	r.App.Post("/user/create", userController.CreateUser)
+	r.App.Get("/user/getAll", userController.GetAllUser)
 }

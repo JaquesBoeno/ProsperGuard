@@ -51,3 +51,13 @@ func (u *UserController) CreateUser(c fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).Send([]byte(user.ID))
 }
+
+func (u *UserController) GetAllUser(c fiber.Ctx) error {
+	users, err := u.DbClient.User.Query().All(u.Ctx)
+
+	if err != nil {
+		log.Fatal("UserController, GetAllUsers: %v", err)
+	}
+
+	return c.Status(fiber.StatusOK).JSON(users)
+}
