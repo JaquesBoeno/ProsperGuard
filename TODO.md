@@ -3,7 +3,7 @@
 - ## Stack:
 
   - front-end: ReactJS
-  - Back-end: Golang, Fiber, PGX
+  - Back-end: Golang, Fiber, Ent
 
 - ## Functional Requirements
 

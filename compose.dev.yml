@@ -2,18 +2,19 @@ version: '3.8'
 
 services:
   database:
-    image: mongo:7.0.5
+    image: postgres:16.1-alpine3.19
     container_name: prosper-guard-database
     restart: always
     ports:
-      - 3060:27017
+      - 3060:5432
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      POSTGRES_USER: ${MONGO_INITDB_ROOT_USERNAME}
+      POSTGRES_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      POSTGRES_DB: 'ProsperGuard'
     networks:
       - prosper-guard-backend
     volumes:
-      - prosper-guard-database:/data/db
+      - prosper-guard-database:/var/lib/postgresql
 
   server:
     build:
