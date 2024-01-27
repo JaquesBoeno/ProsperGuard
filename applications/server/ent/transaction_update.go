@@ -14,7 +14,6 @@ import (
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/predicate"
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/transaction"
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/user"
-	"github.com/google/uuid"
 )
 
 // TransactionUpdate is the builder for updating Transaction entities.
@@ -136,13 +135,13 @@ func (tu *TransactionUpdate) SetNillableUpdatedAt(t *time.Time) *TransactionUpda
 }
 
 // SetHolderID sets the "holder" edge to the User entity by ID.
-func (tu *TransactionUpdate) SetHolderID(id uuid.UUID) *TransactionUpdate {
+func (tu *TransactionUpdate) SetHolderID(id string) *TransactionUpdate {
 	tu.mutation.SetHolderID(id)
 	return tu
 }
 
 // SetNillableHolderID sets the "holder" edge to the User entity by ID if the given value is not nil.
-func (tu *TransactionUpdate) SetNillableHolderID(id *uuid.UUID) *TransactionUpdate {
+func (tu *TransactionUpdate) SetNillableHolderID(id *string) *TransactionUpdate {
 	if id != nil {
 		tu = tu.SetHolderID(*id)
 	}
@@ -193,7 +192,7 @@ func (tu *TransactionUpdate) ExecX(ctx context.Context) {
 }
 
 func (tu *TransactionUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(transaction.Table, transaction.Columns, sqlgraph.NewFieldSpec(transaction.FieldID, field.TypeUUID))
+	_spec := sqlgraph.NewUpdateSpec(transaction.Table, transaction.Columns, sqlgraph.NewFieldSpec(transaction.FieldID, field.TypeString))
 	if ps := tu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -233,7 +232,7 @@ func (tu *TransactionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{transaction.HolderColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -246,7 +245,7 @@ func (tu *TransactionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{transaction.HolderColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
@@ -380,13 +379,13 @@ func (tuo *TransactionUpdateOne) SetNillableUpdatedAt(t *time.Time) *Transaction
 }
 
 // SetHolderID sets the "holder" edge to the User entity by ID.
-func (tuo *TransactionUpdateOne) SetHolderID(id uuid.UUID) *TransactionUpdateOne {
+func (tuo *TransactionUpdateOne) SetHolderID(id string) *TransactionUpdateOne {
 	tuo.mutation.SetHolderID(id)
 	return tuo
 }
 
 // SetNillableHolderID sets the "holder" edge to the User entity by ID if the given value is not nil.
-func (tuo *TransactionUpdateOne) SetNillableHolderID(id *uuid.UUID) *TransactionUpdateOne {
+func (tuo *TransactionUpdateOne) SetNillableHolderID(id *string) *TransactionUpdateOne {
 	if id != nil {
 		tuo = tuo.SetHolderID(*id)
 	}
@@ -450,7 +449,7 @@ func (tuo *TransactionUpdateOne) ExecX(ctx context.Context) {
 }
 
 func (tuo *TransactionUpdateOne) sqlSave(ctx context.Context) (_node *Transaction, err error) {
-	_spec := sqlgraph.NewUpdateSpec(transaction.Table, transaction.Columns, sqlgraph.NewFieldSpec(transaction.FieldID, field.TypeUUID))
+	_spec := sqlgraph.NewUpdateSpec(transaction.Table, transaction.Columns, sqlgraph.NewFieldSpec(transaction.FieldID, field.TypeString))
 	id, ok := tuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Transaction.id" for update`)}
@@ -507,7 +506,7 @@ func (tuo *TransactionUpdateOne) sqlSave(ctx context.Context) (_node *Transactio
 			Columns: []string{transaction.HolderColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -520,7 +519,7 @@ func (tuo *TransactionUpdateOne) sqlSave(ctx context.Context) (_node *Transactio
 			Columns: []string{transaction.HolderColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {

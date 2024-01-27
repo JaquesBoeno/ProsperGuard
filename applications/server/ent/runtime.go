@@ -8,7 +8,6 @@ import (
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/schema"
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/transaction"
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/user"
-	"github.com/google/uuid"
 )
 
 // The init function reads all schema descriptors with runtime code
@@ -28,11 +27,11 @@ func init() {
 	// transactionDescID is the schema descriptor for id field.
 	transactionDescID := transactionFields[0].Descriptor()
 	// transaction.DefaultID holds the default value on creation for the id field.
-	transaction.DefaultID = transactionDescID.Default.(func() uuid.UUID)
+	transaction.DefaultID = transactionDescID.Default.(string)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescID is the schema descriptor for id field.
 	userDescID := userFields[0].Descriptor()
 	// user.DefaultID holds the default value on creation for the id field.
-	user.DefaultID = userDescID.Default.(func() uuid.UUID)
+	user.DefaultID = userDescID.Default.(string)
 }

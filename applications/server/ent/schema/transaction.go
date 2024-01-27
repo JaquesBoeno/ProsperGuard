@@ -17,7 +17,7 @@ type Transaction struct {
 // Fields of the Transaction.
 func (Transaction) Fields() []ent.Field {
 	return []ent.Field{
-		field.UUID("id", uuid.UUID{}).Default(uuid.New).Unique(),
+		field.String("id").Default((uuid.New()).String()),
 		field.String("type"),
 		field.String("name"),
 		field.String("description"),

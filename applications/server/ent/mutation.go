@@ -14,7 +14,6 @@ import (
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/predicate"
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/transaction"
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/user"
-	"github.com/google/uuid"
 )
 
 const (
@@ -35,7 +34,7 @@ type TransactionMutation struct {
 	config
 	op            Op
 	typ           string
-	id            *uuid.UUID
+	id            *string
 	_type         *string
 	name          *string
 	description   *string
@@ -45,7 +44,7 @@ type TransactionMutation struct {
 	created_at    *time.Time
 	updated_at    *time.Time
 	clearedFields map[string]struct{}
-	holder        *uuid.UUID
+	holder        *string
 	clearedholder bool
 	done          bool
 	oldValue      func(context.Context) (*Transaction, error)
@@ -72,7 +71,7 @@ func newTransactionMutation(c config, op Op, opts ...transactionOption) *Transac
 }
 
 // withTransactionID sets the ID field of the mutation.
-func withTransactionID(id uuid.UUID) transactionOption {
+func withTransactionID(id string) transactionOption {
 	return func(m *TransactionMutation) {
 		var (
 			err   error
@@ -124,13 +123,13 @@ func (m TransactionMutation) Tx() (*Tx, error) {
 
 // SetID sets the value of the id field. Note that this
 // operation is only accepted on creation of Transaction entities.
-func (m *TransactionMutation) SetID(id uuid.UUID) {
+func (m *TransactionMutation) SetID(id string) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *TransactionMutation) ID() (id uuid.UUID, exists bool) {
+func (m *TransactionMutation) ID() (id string, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -141,12 +140,12 @@ func (m *TransactionMutation) ID() (id uuid.UUID, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *TransactionMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
+func (m *TransactionMutation) IDs(ctx context.Context) ([]string, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []uuid.UUID{id}, nil
+			return []string{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -429,7 +428,7 @@ func (m *TransactionMutation) ResetUpdatedAt() {
 }
 
 // SetHolderID sets the "holder" edge to the User entity by id.
-func (m *TransactionMutation) SetHolderID(id uuid.UUID) {
+func (m *TransactionMutation) SetHolderID(id string) {
 	m.holder = &id
 }
 
@@ -444,7 +443,7 @@ func (m *TransactionMutation) HolderCleared() bool {
 }
 
 // HolderID returns the "holder" edge ID in the mutation.
-func (m *TransactionMutation) HolderID() (id uuid.UUID, exists bool) {
+func (m *TransactionMutation) HolderID() (id string, exists bool) {
 	if m.holder != nil {
 		return *m.holder, true
 	}
@@ -454,7 +453,7 @@ func (m *TransactionMutation) HolderID() (id uuid.UUID, exists bool) {
 // HolderIDs returns the "holder" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // HolderID instead. It exists only for internal usage by the builders.
-func (m *TransactionMutation) HolderIDs() (ids []uuid.UUID) {
+func (m *TransactionMutation) HolderIDs() (ids []string) {
 	if id := m.holder; id != nil {
 		ids = append(ids, *id)
 	}
@@ -794,14 +793,14 @@ type UserMutation struct {
 	config
 	op                  Op
 	typ                 string
-	id                  *uuid.UUID
+	id                  *string
 	name                *string
 	email               *string
 	passwordHash        *string
 	otpSeed             *string
 	clearedFields       map[string]struct{}
-	transactions        map[uuid.UUID]struct{}
-	removedtransactions map[uuid.UUID]struct{}
+	transactions        map[string]struct{}
+	removedtransactions map[string]struct{}
 	clearedtransactions bool
 	done                bool
 	oldValue            func(context.Context) (*User, error)
@@ -828,7 +827,7 @@ func newUserMutation(c config, op Op, opts ...userOption) *UserMutation {
 }
 
 // withUserID sets the ID field of the mutation.
-func withUserID(id uuid.UUID) userOption {
+func withUserID(id string) userOption {
 	return func(m *UserMutation) {
 		var (
 			err   error
@@ -880,13 +879,13 @@ func (m UserMutation) Tx() (*Tx, error) {
 
 // SetID sets the value of the id field. Note that this
 // operation is only accepted on creation of User entities.
-func (m *UserMutation) SetID(id uuid.UUID) {
+func (m *UserMutation) SetID(id string) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *UserMutation) ID() (id uuid.UUID, exists bool) {
+func (m *UserMutation) ID() (id string, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -897,12 +896,12 @@ func (m *UserMutation) ID() (id uuid.UUID, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *UserMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
+func (m *UserMutation) IDs(ctx context.Context) ([]string, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []uuid.UUID{id}, nil
+			return []string{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -1057,9 +1056,9 @@ func (m *UserMutation) ResetOtpSeed() {
 }
 
 // AddTransactionIDs adds the "transactions" edge to the Transaction entity by ids.
-func (m *UserMutation) AddTransactionIDs(ids ...uuid.UUID) {
+func (m *UserMutation) AddTransactionIDs(ids ...string) {
 	if m.transactions == nil {
-		m.transactions = make(map[uuid.UUID]struct{})
+		m.transactions = make(map[string]struct{})
 	}
 	for i := range ids {
 		m.transactions[ids[i]] = struct{}{}
@@ -1077,9 +1076,9 @@ func (m *UserMutation) TransactionsCleared() bool {
 }
 
 // RemoveTransactionIDs removes the "transactions" edge to the Transaction entity by IDs.
-func (m *UserMutation) RemoveTransactionIDs(ids ...uuid.UUID) {
+func (m *UserMutation) RemoveTransactionIDs(ids ...string) {
 	if m.removedtransactions == nil {
-		m.removedtransactions = make(map[uuid.UUID]struct{})
+		m.removedtransactions = make(map[string]struct{})
 	}
 	for i := range ids {
 		delete(m.transactions, ids[i])
@@ -1088,7 +1087,7 @@ func (m *UserMutation) RemoveTransactionIDs(ids ...uuid.UUID) {
 }
 
 // RemovedTransactions returns the removed IDs of the "transactions" edge to the Transaction entity.
-func (m *UserMutation) RemovedTransactionsIDs() (ids []uuid.UUID) {
+func (m *UserMutation) RemovedTransactionsIDs() (ids []string) {
 	for id := range m.removedtransactions {
 		ids = append(ids, id)
 	}
@@ -1096,7 +1095,7 @@ func (m *UserMutation) RemovedTransactionsIDs() (ids []uuid.UUID) {
 }
 
 // TransactionsIDs returns the "transactions" edge IDs in the mutation.
-func (m *UserMutation) TransactionsIDs() (ids []uuid.UUID) {
+func (m *UserMutation) TransactionsIDs() (ids []string) {
 	for id := range m.transactions {
 		ids = append(ids, id)
 	}

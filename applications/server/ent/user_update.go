@@ -13,7 +13,6 @@ import (
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/predicate"
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/transaction"
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/user"
-	"github.com/google/uuid"
 )
 
 // UserUpdate is the builder for updating User entities.
@@ -86,14 +85,14 @@ func (uu *UserUpdate) SetNillableOtpSeed(s *string) *UserUpdate {
 }
 
 // AddTransactionIDs adds the "transactions" edge to the Transaction entity by IDs.
-func (uu *UserUpdate) AddTransactionIDs(ids ...uuid.UUID) *UserUpdate {
+func (uu *UserUpdate) AddTransactionIDs(ids ...string) *UserUpdate {
 	uu.mutation.AddTransactionIDs(ids...)
 	return uu
 }
 
 // AddTransactions adds the "transactions" edges to the Transaction entity.
 func (uu *UserUpdate) AddTransactions(t ...*Transaction) *UserUpdate {
-	ids := make([]uuid.UUID, len(t))
+	ids := make([]string, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -112,14 +111,14 @@ func (uu *UserUpdate) ClearTransactions() *UserUpdate {
 }
 
 // RemoveTransactionIDs removes the "transactions" edge to Transaction entities by IDs.
-func (uu *UserUpdate) RemoveTransactionIDs(ids ...uuid.UUID) *UserUpdate {
+func (uu *UserUpdate) RemoveTransactionIDs(ids ...string) *UserUpdate {
 	uu.mutation.RemoveTransactionIDs(ids...)
 	return uu
 }
 
 // RemoveTransactions removes "transactions" edges to Transaction entities.
 func (uu *UserUpdate) RemoveTransactions(t ...*Transaction) *UserUpdate {
-	ids := make([]uuid.UUID, len(t))
+	ids := make([]string, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -154,7 +153,7 @@ func (uu *UserUpdate) ExecX(ctx context.Context) {
 }
 
 func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID))
+	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeString))
 	if ps := uu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -182,7 +181,7 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{user.TransactionsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(transaction.FieldID, field.TypeUUID),
+				IDSpec: sqlgraph.NewFieldSpec(transaction.FieldID, field.TypeString),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -195,7 +194,7 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{user.TransactionsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(transaction.FieldID, field.TypeUUID),
+				IDSpec: sqlgraph.NewFieldSpec(transaction.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
@@ -211,7 +210,7 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{user.TransactionsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(transaction.FieldID, field.TypeUUID),
+				IDSpec: sqlgraph.NewFieldSpec(transaction.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
@@ -296,14 +295,14 @@ func (uuo *UserUpdateOne) SetNillableOtpSeed(s *string) *UserUpdateOne {
 }
 
 // AddTransactionIDs adds the "transactions" edge to the Transaction entity by IDs.
-func (uuo *UserUpdateOne) AddTransactionIDs(ids ...uuid.UUID) *UserUpdateOne {
+func (uuo *UserUpdateOne) AddTransactionIDs(ids ...string) *UserUpdateOne {
 	uuo.mutation.AddTransactionIDs(ids...)
 	return uuo
 }
 
 // AddTransactions adds the "transactions" edges to the Transaction entity.
 func (uuo *UserUpdateOne) AddTransactions(t ...*Transaction) *UserUpdateOne {
-	ids := make([]uuid.UUID, len(t))
+	ids := make([]string, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -322,14 +321,14 @@ func (uuo *UserUpdateOne) ClearTransactions() *UserUpdateOne {
 }
 
 // RemoveTransactionIDs removes the "transactions" edge to Transaction entities by IDs.
-func (uuo *UserUpdateOne) RemoveTransactionIDs(ids ...uuid.UUID) *UserUpdateOne {
+func (uuo *UserUpdateOne) RemoveTransactionIDs(ids ...string) *UserUpdateOne {
 	uuo.mutation.RemoveTransactionIDs(ids...)
 	return uuo
 }
 
 // RemoveTransactions removes "transactions" edges to Transaction entities.
 func (uuo *UserUpdateOne) RemoveTransactions(t ...*Transaction) *UserUpdateOne {
-	ids := make([]uuid.UUID, len(t))
+	ids := make([]string, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
@@ -377,7 +376,7 @@ func (uuo *UserUpdateOne) ExecX(ctx context.Context) {
 }
 
 func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
-	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID))
+	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeString))
 	id, ok := uuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "User.id" for update`)}
@@ -422,7 +421,7 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Columns: []string{user.TransactionsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(transaction.FieldID, field.TypeUUID),
+				IDSpec: sqlgraph.NewFieldSpec(transaction.FieldID, field.TypeString),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -435,7 +434,7 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Columns: []string{user.TransactionsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(transaction.FieldID, field.TypeUUID),
+				IDSpec: sqlgraph.NewFieldSpec(transaction.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
@@ -451,7 +450,7 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Columns: []string{user.TransactionsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(transaction.FieldID, field.TypeUUID),
+				IDSpec: sqlgraph.NewFieldSpec(transaction.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {

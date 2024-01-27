@@ -12,7 +12,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/transaction"
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/user"
-	"github.com/google/uuid"
 )
 
 // TransactionCreate is the builder for creating a Transaction entity.
@@ -81,27 +80,27 @@ func (tc *TransactionCreate) SetNillableUpdatedAt(t *time.Time) *TransactionCrea
 }
 
 // SetID sets the "id" field.
-func (tc *TransactionCreate) SetID(u uuid.UUID) *TransactionCreate {
-	tc.mutation.SetID(u)
+func (tc *TransactionCreate) SetID(s string) *TransactionCreate {
+	tc.mutation.SetID(s)
 	return tc
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (tc *TransactionCreate) SetNillableID(u *uuid.UUID) *TransactionCreate {
-	if u != nil {
-		tc.SetID(*u)
+func (tc *TransactionCreate) SetNillableID(s *string) *TransactionCreate {
+	if s != nil {
+		tc.SetID(*s)
 	}
 	return tc
 }
 
 // SetHolderID sets the "holder" edge to the User entity by ID.
-func (tc *TransactionCreate) SetHolderID(id uuid.UUID) *TransactionCreate {
+func (tc *TransactionCreate) SetHolderID(id string) *TransactionCreate {
 	tc.mutation.SetHolderID(id)
 	return tc
 }
 
 // SetNillableHolderID sets the "holder" edge to the User entity by ID if the given value is not nil.
-func (tc *TransactionCreate) SetNillableHolderID(id *uuid.UUID) *TransactionCreate {
+func (tc *TransactionCreate) SetNillableHolderID(id *string) *TransactionCreate {
 	if id != nil {
 		tc = tc.SetHolderID(*id)
 	}
@@ -157,7 +156,7 @@ func (tc *TransactionCreate) defaults() {
 		tc.mutation.SetUpdatedAt(v)
 	}
 	if _, ok := tc.mutation.ID(); !ok {
-		v := transaction.DefaultID()
+		v := transaction.DefaultID
 		tc.mutation.SetID(v)
 	}
 }
@@ -200,10 +199,10 @@ func (tc *TransactionCreate) sqlSave(ctx context.Context) (*Transaction, error) 
 		return nil, err
 	}
 	if _spec.ID.Value != nil {
-		if id, ok := _spec.ID.Value.(*uuid.UUID); ok {
-			_node.ID = *id
-		} else if err := _node.ID.Scan(_spec.ID.Value); err != nil {
-			return nil, err
+		if id, ok := _spec.ID.Value.(string); ok {
+			_node.ID = id
+		} else {
+			return nil, fmt.Errorf("unexpected Transaction.ID type: %T", _spec.ID.Value)
 		}
 	}
 	tc.mutation.id = &_node.ID
@@ -214,11 +213,11 @@ func (tc *TransactionCreate) sqlSave(ctx context.Context) (*Transaction, error) 
 func (tc *TransactionCreate) createSpec() (*Transaction, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Transaction{config: tc.config}
-		_spec = sqlgraph.NewCreateSpec(transaction.Table, sqlgraph.NewFieldSpec(transaction.FieldID, field.TypeUUID))
+		_spec = sqlgraph.NewCreateSpec(transaction.Table, sqlgraph.NewFieldSpec(transaction.FieldID, field.TypeString))
 	)
 	if id, ok := tc.mutation.ID(); ok {
 		_node.ID = id
-		_spec.ID.Value = &id
+		_spec.ID.Value = id
 	}
 	if value, ok := tc.mutation.GetType(); ok {
 		_spec.SetField(transaction.FieldType, field.TypeString, value)
@@ -256,7 +255,7 @@ func (tc *TransactionCreate) createSpec() (*Transaction, *sqlgraph.CreateSpec) {
 			Columns: []string{transaction.HolderColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {

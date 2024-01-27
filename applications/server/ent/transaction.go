@@ -11,14 +11,13 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/transaction"
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/user"
-	"github.com/google/uuid"
 )
 
 // Transaction is the model entity for the Transaction schema.
 type Transaction struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID uuid.UUID `json:"id,omitempty"`
+	ID string `json:"id,omitempty"`
 	// Type holds the value of the "type" field.
 	Type string `json:"type,omitempty"`
 	// Name holds the value of the "name" field.
@@ -36,7 +35,7 @@ type Transaction struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TransactionQuery when eager-loading is set.
 	Edges             TransactionEdges `json:"edges"`
-	user_transactions *uuid.UUID
+	user_transactions *string
 	selectValues      sql.SelectValues
 }
 
@@ -69,14 +68,12 @@ func (*Transaction) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case transaction.FieldValue:
 			values[i] = new(sql.NullFloat64)
-		case transaction.FieldType, transaction.FieldName, transaction.FieldDescription:
+		case transaction.FieldID, transaction.FieldType, transaction.FieldName, transaction.FieldDescription:
 			values[i] = new(sql.NullString)
 		case transaction.FieldDate, transaction.FieldCreatedAt, transaction.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case transaction.FieldID:
-			values[i] = new(uuid.UUID)
 		case transaction.ForeignKeys[0]: // user_transactions
-			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
+			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -93,10 +90,10 @@ func (t *Transaction) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case transaction.FieldID:
-			if value, ok := values[i].(*uuid.UUID); !ok {
+			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
-			} else if value != nil {
-				t.ID = *value
+			} else if value.Valid {
+				t.ID = value.String
 			}
 		case transaction.FieldType:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -141,11 +138,11 @@ func (t *Transaction) assignValues(columns []string, values []any) error {
 				t.UpdatedAt = value.Time
 			}
 		case transaction.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullScanner); !ok {
+			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field user_transactions", values[i])
 			} else if value.Valid {
-				t.user_transactions = new(uuid.UUID)
-				*t.user_transactions = *value.S.(*uuid.UUID)
+				t.user_transactions = new(string)
+				*t.user_transactions = value.String
 			}
 		default:
 			t.selectValues.Set(columns[i], values[i])
