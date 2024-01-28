@@ -32,6 +32,11 @@ export default defineConfig({
           translations: { 'pt-BR': 'Transações' },
           autogenerate: { directory: 'transactions' },
         },
+        {
+          label: 'Security Package',
+          translations: { 'pt-BR': 'Pacote "Security"' },
+          autogenerate: { directory: 'security' },
+        },
       ],
     }),
   ],
