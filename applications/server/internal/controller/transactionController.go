@@ -20,20 +20,19 @@ type TransactionController struct {
 func (t *TransactionController) CreateTransaction(c fiber.Ctx) error {
 	m := c.Queries()
 	requiredFields := []string{"type", "name", "description", "value", "date", "holder_id"}
-	for _, field := range requiredFields {
-		if m[field] == "" {
-			return c.Status(fiber.StatusBadRequest).Send([]byte("provide a nonempty " + field))
-		}
+
+	if ok, field := hasEmptyFields(requiredFields, m); ok {
+		return c.Status(fiber.StatusBadRequest).Send([]byte("provide a nonempty " + field))
 	}
 
 	if m["type"] != "expense" && m["type"] != "income" {
-		return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction, provide a valid 'type' (income OR expense)"))
+		return c.Status(fiber.StatusBadRequest).Send([]byte("Failed on create the transaction, provide a valid 'type' (income OR expense)"))
 	}
 
 	_, err := t.DbClient.User.Query().Where(user.ID(m["holder_id"])).Only(t.Ctx)
 	if err != nil {
 		log.Println(fmt.Sprintf("TransactionController, CreateTransaction, verify user exists %v", err))
-		return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction, user not exist."))
+		return c.Status(fiber.StatusBadRequest).Send([]byte("Failed on create the transaction, user not exist."))
 	}
 
 	value, err := strconv.ParseFloat(m["value"], 64)
@@ -42,9 +41,7 @@ func (t *TransactionController) CreateTransaction(c fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
 	}
 
-	dateLayout := "2006-01-02T15:04:05Z"
-
-	date, err := time.Parse(dateLayout, m["date"])
+	date, err := time.Parse(time.RFC3339, m["date"])
 	if err != nil {
 		log.Println(fmt.Sprintf("TransactionController, CreateTransaction, format date: %v", err))
 		return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
@@ -70,16 +67,15 @@ func (t *TransactionController) CreateTransaction(c fiber.Ctx) error {
 func (t *TransactionController) GetAllTransactionsFromOneUser(c fiber.Ctx) error {
 	m := c.Queries()
 	requiredFields := []string{"holder_id"}
-	for _, field := range requiredFields {
-		if m[field] == "" {
-			return c.Status(fiber.StatusBadRequest).Send([]byte("provide a nonempty " + field))
-		}
+
+	if ok, field := hasEmptyFields(requiredFields, m); ok {
+		return c.Status(fiber.StatusBadRequest).Send([]byte("provide a nonempty " + field))
 	}
 
 	user, err := t.DbClient.User.Query().Where(user.ID(m["holder_id"])).Only(t.Ctx)
 	if err != nil {
 		log.Println(fmt.Sprintf("TransactionController, GetAllTransactionsFromOneUser, verify user exists %v", err))
-		return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on get transactions, user not exist."))
+		return c.Status(fiber.StatusBadRequest).Send([]byte("Failed on get transactions, user not exist."))
 	}
 
 	transactions, err := user.QueryTransactions().All(t.Ctx)
