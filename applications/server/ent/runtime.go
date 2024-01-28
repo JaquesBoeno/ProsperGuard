@@ -26,12 +26,12 @@ func init() {
 	transaction.DefaultUpdatedAt = transactionDescUpdatedAt.Default.(time.Time)
 	// transactionDescID is the schema descriptor for id field.
 	transactionDescID := transactionFields[0].Descriptor()
-	// transaction.DefaultID holds the default value on creation for the id field.
-	transaction.DefaultID = transactionDescID.Default.(string)
+	// transaction.IDValidator is a validator for the "id" field. It is called by the builders before save.
+	transaction.IDValidator = transactionDescID.Validators[0].(func(string) error)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescID is the schema descriptor for id field.
 	userDescID := userFields[0].Descriptor()
-	// user.DefaultID holds the default value on creation for the id field.
-	user.DefaultID = userDescID.Default.(string)
+	// user.IDValidator is a validator for the "id" field. It is called by the builders before save.
+	user.IDValidator = userDescID.Validators[0].(func(string) error)
 }

@@ -85,14 +85,6 @@ func (tc *TransactionCreate) SetID(s string) *TransactionCreate {
 	return tc
 }
 
-// SetNillableID sets the "id" field if the given value is not nil.
-func (tc *TransactionCreate) SetNillableID(s *string) *TransactionCreate {
-	if s != nil {
-		tc.SetID(*s)
-	}
-	return tc
-}
-
 // SetHolderID sets the "holder" edge to the User entity by ID.
 func (tc *TransactionCreate) SetHolderID(id string) *TransactionCreate {
 	tc.mutation.SetHolderID(id)
@@ -155,10 +147,6 @@ func (tc *TransactionCreate) defaults() {
 		v := transaction.DefaultUpdatedAt
 		tc.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := tc.mutation.ID(); !ok {
-		v := transaction.DefaultID
-		tc.mutation.SetID(v)
-	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -183,6 +171,11 @@ func (tc *TransactionCreate) check() error {
 	}
 	if _, ok := tc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Transaction.updated_at"`)}
+	}
+	if v, ok := tc.mutation.ID(); ok {
+		if err := transaction.IDValidator(v); err != nil {
+			return &ValidationError{Name: "id", err: fmt.Errorf(`ent: validator failed for field "Transaction.id": %w`, err)}
+		}
 	}
 	return nil
 }

@@ -8,6 +8,7 @@ import (
 	"github.com/JaquesBoeno/ProsperGuard/server/ent"
 	"github.com/JaquesBoeno/ProsperGuard/server/internal/security"
 	"github.com/gofiber/fiber/v3"
+	"github.com/google/uuid"
 )
 
 type UserController struct {
@@ -37,6 +38,7 @@ func (u *UserController) CreateUser(c fiber.Ctx) error {
 	passwordHash := security.HashPassword(plainPassword)
 
 	user, err := u.DbClient.User.Create().
+		SetID((uuid.New()).String()).
 		SetName(name).
 		SetEmail(email).
 		SetPasswordHash(passwordHash).

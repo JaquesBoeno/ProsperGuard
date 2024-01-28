@@ -79,8 +79,8 @@ var (
 	DefaultCreatedAt time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
 	DefaultUpdatedAt time.Time
-	// DefaultID holds the default value on creation for the "id" field.
-	DefaultID string
+	// IDValidator is a validator for the "id" field. It is called by the builders before save.
+	IDValidator func(string) error
 )
 
 // OrderOption defines the ordering options for the Transaction queries.

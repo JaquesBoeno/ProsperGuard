@@ -11,6 +11,7 @@ import (
 	"github.com/JaquesBoeno/ProsperGuard/server/ent"
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/user"
 	"github.com/gofiber/fiber/v3"
+	"github.com/google/uuid"
 )
 
 type TransactionController struct {
@@ -49,6 +50,7 @@ func (t *TransactionController) CreateTransaction(c fiber.Ctx) error {
 	}
 
 	transaction, err := t.DbClient.Transaction.Create().
+		SetID((uuid.New()).String()).
 		SetType(m["type"]).
 		SetName(m["name"]).
 		SetDescription(m["description"]).

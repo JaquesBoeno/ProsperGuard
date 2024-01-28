@@ -6,7 +6,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"github.com/google/uuid"
 )
 
 // Transaction holds the schema definition for the Transaction entity.
@@ -17,7 +16,7 @@ type Transaction struct {
 // Fields of the Transaction.
 func (Transaction) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("id").Default((uuid.New()).String()),
+		field.String("id").NotEmpty().Unique(),
 		field.String("type"),
 		field.String("name"),
 		field.String("description"),

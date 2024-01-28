@@ -50,14 +50,6 @@ func (uc *UserCreate) SetID(s string) *UserCreate {
 	return uc
 }
 
-// SetNillableID sets the "id" field if the given value is not nil.
-func (uc *UserCreate) SetNillableID(s *string) *UserCreate {
-	if s != nil {
-		uc.SetID(*s)
-	}
-	return uc
-}
-
 // AddTransactionIDs adds the "transactions" edge to the Transaction entity by IDs.
 func (uc *UserCreate) AddTransactionIDs(ids ...string) *UserCreate {
 	uc.mutation.AddTransactionIDs(ids...)
@@ -80,7 +72,6 @@ func (uc *UserCreate) Mutation() *UserMutation {
 
 // Save creates the User in the database.
 func (uc *UserCreate) Save(ctx context.Context) (*User, error) {
-	uc.defaults()
 	return withHooks(ctx, uc.sqlSave, uc.mutation, uc.hooks)
 }
 
@@ -106,14 +97,6 @@ func (uc *UserCreate) ExecX(ctx context.Context) {
 	}
 }
 
-// defaults sets the default values of the builder before save.
-func (uc *UserCreate) defaults() {
-	if _, ok := uc.mutation.ID(); !ok {
-		v := user.DefaultID
-		uc.mutation.SetID(v)
-	}
-}
-
 // check runs all checks and user-defined validators on the builder.
 func (uc *UserCreate) check() error {
 	if _, ok := uc.mutation.Name(); !ok {
@@ -127,6 +110,11 @@ func (uc *UserCreate) check() error {
 	}
 	if _, ok := uc.mutation.OtpSeed(); !ok {
 		return &ValidationError{Name: "otpSeed", err: errors.New(`ent: missing required field "User.otpSeed"`)}
+	}
+	if v, ok := uc.mutation.ID(); ok {
+		if err := user.IDValidator(v); err != nil {
+			return &ValidationError{Name: "id", err: fmt.Errorf(`ent: validator failed for field "User.id": %w`, err)}
+		}
 	}
 	return nil
 }
@@ -216,7 +204,6 @@ func (ucb *UserCreateBulk) Save(ctx context.Context) ([]*User, error) {
 	for i := range ucb.builders {
 		func(i int, root context.Context) {
 			builder := ucb.builders[i]
-			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*UserMutation)
 				if !ok {
