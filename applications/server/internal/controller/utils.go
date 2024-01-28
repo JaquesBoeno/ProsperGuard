@@ -9,3 +9,12 @@ func hasEmptyFields(requiredFields []string, m map[string]string) (bool, string)
 	}
 	return false, ""
 }
+
+// Return true if Type field is valid
+func typeFieldIsValid(typeField string) bool {
+	if typeField == "income" || typeField == "expense" {
+		return true
+	}
+
+	return false
+}

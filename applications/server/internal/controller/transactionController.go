@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"github.com/JaquesBoeno/ProsperGuard/server/ent"
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/user"
 	"github.com/gofiber/fiber/v3"
@@ -25,7 +26,7 @@ func (t *TransactionController) CreateTransaction(c fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).Send([]byte("provide a nonempty " + field))
 	}
 
-	if m["type"] != "expense" && m["type"] != "income" {
+	if ok := typeFieldIsValid(m["type"]); ok {
 		return c.Status(fiber.StatusBadRequest).Send([]byte("Failed on create the transaction, provide a valid 'type' (income OR expense)"))
 	}
 
@@ -78,7 +79,19 @@ func (t *TransactionController) GetAllTransactionsFromOneUser(c fiber.Ctx) error
 		return c.Status(fiber.StatusBadRequest).Send([]byte("Failed on get transactions, user not exist."))
 	}
 
-	transactions, err := user.QueryTransactions().All(t.Ctx)
+	var typeFilter string = m["type"]
+	if ok := typeFieldIsValid(typeFilter); typeFilter != "" && !ok {
+		return c.Status(fiber.StatusBadRequest).Send([]byte("Failed on create the transaction, provide a valid 'type' (income OR expense)"))
+	}
+
+	transactions, err := user.QueryTransactions().
+		Where(func(s *sql.Selector) {
+			if typeFilter != "" {
+				s.Where(sql.InValues("type", typeFilter))
+			}
+
+		}).
+		All(t.Ctx)
 
 	if err != nil {
 		log.Println(fmt.Sprintf("TransactionController, GetAllTransactionsFromOneUser %v", err))
