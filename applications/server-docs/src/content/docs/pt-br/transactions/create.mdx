@@ -2,3 +2,21 @@
 title: Criar Transação
 description: Get started building your docs site with Starlight.
 ---
+A rota para criar transações é `/transaction/create` e precisa receber como parametros:
+
+## Parametros
+- `type`: o tipo da transação, ele deve ser "income" para transações de entrada onde se recebe dinheiro, ou "expense" paraa transações de saida, onde se gasta dinheiro.
+- `name`: o nome da transação, é uma descrição curta do gasto.
+- `description`: é a descrição da transação, aqui podemos especificar melhor a transação.
+- `value`: o valor da transação, ele deve ser enviado com 2 casas decimais e com . sendo o separador das casas decimais.
+- `date`: A data em que a transão foi realizada, deve ser formatada no esquema de RFC3339 `YYYY-MM-DDThh:mm:ss<TZDSuffix>`
+  - Ex: 2006-01-02T15:04:05+07:00, 2 de janeiro de 2006 às 15 horas e 4 minutos e 5 segundos, no fuso UTC+7
+  - Ex: 2024-01-28T09:26:13-03:00, 28 de janeiro de 2024 às 9 horas e 26 minutos e 13 segundos, no fuso UTC-3
+- `holder_id`: É o ID do usuario que é o dono/responsável pela transação
+
+## Formato da URL
+A url deve seguir o seguinte formato:
+- `/transaction/create?type=<type>&name=<name>&description=<desc>&value=<value>&date=<date>&holder_id=<id>`
+
+Um exemplo de URL seria este:
+- `/transaction/create?type=expense&name=cachorro+quente&description=cachorro+quente+que+eu+comprei+na+feira&value=15.39&date=2024-01-12T12%3A00%3A00Z&holder_id=ec23e141-ad70-4685-8af6-43ddb0fdcb96 `
