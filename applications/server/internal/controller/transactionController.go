@@ -26,7 +26,7 @@ func (t *TransactionController) CreateTransaction(c fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).Send([]byte("provide a nonempty " + field))
 	}
 
-	if ok := typeFieldIsValid(m["type"]); ok {
+	if ok := typeFieldIsValid(m["type"]); !ok {
 		return c.Status(fiber.StatusBadRequest).Send([]byte("Failed on create the transaction, provide a valid 'type' (income OR expense)"))
 	}
 
@@ -111,6 +111,18 @@ func (t *TransactionController) GetAllTransactionsFromOneUser(c fiber.Ctx) error
 		}
 	}
 
+	var date_start time.Time
+	// var date_end time.Time
+	// var date_exact time.Time
+
+	if m["date_start"] != "" {
+		date_start, err = time.Parse(time.RFC3339, m["date_start"])
+		if err != nil {
+			log.Println(fmt.Sprintf("TransactionController, CreateTransaction, format value: %v", err))
+			return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
+		}
+	}
+
 	transactions, err := user.QueryTransactions().
 		Where(func(s *sql.Selector) {
 			if typeFilter != "" {
@@ -125,6 +137,10 @@ func (t *TransactionController) GetAllTransactionsFromOneUser(c fiber.Ctx) error
 				s.Where(sql.GTE("value", value_min))
 			} else if value_min == 0 && value_max > value_min {
 				s.Where(sql.LTE("value", value_max))
+			}
+
+			if m["date_start"] != "" {
+				s.Where(sql.GTE("date", date_start))
 			}
 		}).
 		All(t.Ctx)
