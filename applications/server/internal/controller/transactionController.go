@@ -36,7 +36,7 @@ func (t *TransactionController) CreateTransaction(c fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction, user not exist."))
 	}
 
-	value, err := strconv.ParseFloat(m["value"], 32)
+	value, err := strconv.ParseFloat(m["value"], 64)
 	if err != nil {
 		log.Println(fmt.Sprintf("TransactionController, CreateTransaction, format value: %v", err))
 		return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
