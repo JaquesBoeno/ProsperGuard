@@ -44,9 +44,31 @@ export default defineConfig({
           ],
         },
         {
-          label: 'Transactions',
-          translations: { 'pt-BR': 'Transações' },
-          autogenerate: { directory: 'transactions' },
+          label: 'Routes',
+          translations: { 'pt-BR': 'Rotas' },
+          items: [
+            {
+              label: 'Transactions',
+              translations: { 'pt-BR': 'Transações' },
+              autogenerate: { directory: 'routes/transactions' },
+            },
+          ],
+        },
+        {
+          label: 'Controllers',
+          translations: { 'pt-BR': 'Controladores' },
+          items: [
+            {
+              label: 'Transactions',
+              translations: { 'pt-BR': 'Transações' },
+              autogenerate: { directory: 'controllers/transactions' },
+            },
+            {
+              label: 'Utils',
+              translations: { 'pt-BR': 'Utilitários' },
+              link: 'controllers/utils',
+            },
+          ],
         },
         {
           label: 'Security Package',
