@@ -114,11 +114,27 @@ func (t *TransactionController) GetAllTransactionsFromOneUser(c fiber.Ctx) error
 	}
 
 	var date_start time.Time
-	// var date_end time.Time
-	// var date_exact time.Time
+	var date_end time.Time
+	var date_exact time.Time
 
 	if m["date_start"] != "" {
 		date_start, err = time.Parse(time.RFC3339, m["date_start"])
+		if err != nil {
+			log.Println(fmt.Sprintf("TransactionController, CreateTransaction, format value: %v", err))
+			return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
+		}
+	}
+
+	if m["date_end"] != "" {
+		date_end, err = time.Parse(time.RFC3339, m["date_end"])
+		if err != nil {
+			log.Println(fmt.Sprintf("TransactionController, CreateTransaction, format value: %v", err))
+			return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
+		}
+	}
+
+	if m["date_exact"] != "" {
+		date_exact, err = time.Parse(time.RFC3339, m["date_exact"])
 		if err != nil {
 			log.Println(fmt.Sprintf("TransactionController, CreateTransaction, format value: %v", err))
 			return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
@@ -141,8 +157,14 @@ func (t *TransactionController) GetAllTransactionsFromOneUser(c fiber.Ctx) error
 				s.Where(sql.LTE("value", value_max))
 			}
 
-			if m["date_start"] != "" {
+			if m["date_exact"] != "" {
+				s.Where(sql.EQ("date", date_exact))
+			} else if m["date_start"] != "" && m["date_end"] == "" {
 				s.Where(sql.GTE("date", date_start))
+			} else if m["date_end"] != "" && m["date_start"] == "" {
+				s.Where(sql.LTE("date", date_end))
+			} else if m["date_end"] != "" && m["date_start"] != "" {
+				s.Where(sql.And(sql.GTE("date", date_start), sql.LTE("date", date_end)))
 			}
 		}).
 		All(t.Ctx)
