@@ -19,10 +19,20 @@ export default defineConfig({
         // Portuguese docs in `src/content/docs/pt-br/`
         'pt-br': {
           label: 'Português do Brasil',
-          lang: 'pt-br',
         },
       },
-      sidebar: [],
+      sidebar: [
+        {
+          label: 'Start Here',
+          translations: { 'pt-BR': 'Comece Aqui' },
+          autogenerate: { directory: 'start-here' },
+        },
+        {
+          label: 'Transactions',
+          translations: { 'pt-BR': 'Transações' },
+          autogenerate: { directory: 'transactions' },
+        },
+      ],
     }),
   ],
 })
