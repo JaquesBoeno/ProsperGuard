@@ -1,0 +1,51 @@
+---
+title: Começo rápido
+description: Uma pequeno tutorial de como subir a aplicação rápidamente para desenvolvimento
+---
+Um pequeno tutorial de como subir a aplicação através do docker compose e fazer as suas primeiras requisições
+
+## Passo a Passo
+
+### Clone o repositório Git
+O primeiro passo é clonar o repostório git para que você tenha o código na sua máquina.
+podemos fazer isso através do comando
+
+```sh
+git clone https://github.com/JaquesBoeno/ProsperGuard.git
+```
+
+Depois só entrar no diretório do projeto com o comando código
+```sh
+cd ProsperGuard
+```
+
+### Criando o Arquivo de variaveis de ambiente
+Para o ambiente de desenvolvimento podemos criar um arquivo de variaveis de ambiente chamado `.env.dev`
+Ele deve conter os seguintes valores:
+- POSTGRES_USER: Esta variavel define o usuário padrão do postgres
+- POSTGRES_PASSWORD: Esta variavel define a senha padrão do postgres
+- BACKEND_PORT: Esta variavel define a porta padrão do servidor back-end
+- DATABASE_URL: Esta variavel define a URL de conexão ao banco de dados
+
+Um arquivo de exemplo pode ser este:
+```env
+# DATABASE ENV
+POSTGRES_USER=root
+POSTGRES_PASSWORD=secret
+
+# BACKEND ENV
+BACKEND_PORT=3070
+DATABASE_URL="postgres://root:secret@prosper-guard-database:5432/ProsperGuard"
+```
+
+### Subindo os containers
+Para subir todos containers automaticamente podemos rodar o seguinte comando:
+```sh
+docker compose --env-file .env.dev -f compose.dev.yml up -d
+```
+- -d faz com que os container rodem em back-ground e não prendão o terminal
+
+Para remover os containers posteriormente podemos usar o comando:
+```sh
+docker compose --env-file .env.dev -f compose.dev.yml down
+```
