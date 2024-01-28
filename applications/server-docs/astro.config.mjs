@@ -25,7 +25,23 @@ export default defineConfig({
         {
           label: 'Start Here',
           translations: { 'pt-BR': 'Comece Aqui' },
-          autogenerate: { directory: 'start-here' },
+          items: [
+            {
+              label: 'Introduction',
+              link: 'start-here/introduction',
+              translations: { 'pt-BR': 'Introdução' },
+            },
+            {
+              label: 'Quick Start',
+              link: 'start-here/quick-start',
+              translations: { 'pt-BR': 'Começo Rápido' },
+            },
+            {
+              label: 'Patterns',
+              link: 'start-here/patterns',
+              translations: { 'pt-BR': 'Padrões' },
+            },
+          ],
         },
         {
           label: 'Transactions',
