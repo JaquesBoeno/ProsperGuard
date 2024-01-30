@@ -5,10 +5,18 @@ import (
 
 	"github.com/JaquesBoeno/ProsperGuard/server/ent"
 	"github.com/JaquesBoeno/ProsperGuard/server/internal/router"
+	"github.com/expectedsh/go-sonic/sonic"
 	"github.com/gofiber/fiber/v3"
 )
 
-func StartServer(DbClient *ent.Client, port string) {
+type Server struct {
+	DbClient      *ent.Client
+	port          string
+	SonicIngester sonic.Ingestable
+	SonicSearch   sonic.Searchable
+}
+
+func (s Server) Start() {
 	app := fiber.New(fiber.Config{
 		CaseSensitive: false,
 		StrictRouting: true,
@@ -18,11 +26,11 @@ func StartServer(DbClient *ent.Client, port string) {
 
 	router := router.Router{
 		App:      app,
-		DbClient: DbClient,
+		DbClient: s.DbClient,
 		Ctx:      context.Background(),
 	}
 
 	router.Start()
 
-	app.Listen(":" + port)
+	app.Listen(":" + s.port)
 }
