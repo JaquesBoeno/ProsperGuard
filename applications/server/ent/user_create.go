@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/JaquesBoeno/ProsperGuard/server/ent/tag"
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/transaction"
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/user"
 )
@@ -63,6 +64,21 @@ func (uc *UserCreate) AddTransactions(t ...*Transaction) *UserCreate {
 		ids[i] = t[i].ID
 	}
 	return uc.AddTransactionIDs(ids...)
+}
+
+// AddTagIDs adds the "tags" edge to the Tag entity by IDs.
+func (uc *UserCreate) AddTagIDs(ids ...string) *UserCreate {
+	uc.mutation.AddTagIDs(ids...)
+	return uc
+}
+
+// AddTags adds the "tags" edges to the Tag entity.
+func (uc *UserCreate) AddTags(t ...*Tag) *UserCreate {
+	ids := make([]string, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return uc.AddTagIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -176,6 +192,22 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(transaction.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.TagsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.TagsTable,
+			Columns: []string{user.TagsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(tag.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {

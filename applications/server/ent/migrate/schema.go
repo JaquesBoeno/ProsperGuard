@@ -8,6 +8,27 @@ import (
 )
 
 var (
+	// TagsColumns holds the columns for the "tags" table.
+	TagsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString},
+		{Name: "label", Type: field.TypeString},
+		{Name: "color", Type: field.TypeString},
+		{Name: "user_tags", Type: field.TypeString, Nullable: true},
+	}
+	// TagsTable holds the schema information for the "tags" table.
+	TagsTable = &schema.Table{
+		Name:       "tags",
+		Columns:    TagsColumns,
+		PrimaryKey: []*schema.Column{TagsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "tags_users_tags",
+				Columns:    []*schema.Column{TagsColumns[3]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
 	// TransactionsColumns holds the columns for the "transactions" table.
 	TransactionsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, Unique: true},
@@ -48,13 +69,43 @@ var (
 		Columns:    UsersColumns,
 		PrimaryKey: []*schema.Column{UsersColumns[0]},
 	}
+	// TransactionTagsColumns holds the columns for the "transaction_tags" table.
+	TransactionTagsColumns = []*schema.Column{
+		{Name: "transaction_id", Type: field.TypeString},
+		{Name: "tag_id", Type: field.TypeString},
+	}
+	// TransactionTagsTable holds the schema information for the "transaction_tags" table.
+	TransactionTagsTable = &schema.Table{
+		Name:       "transaction_tags",
+		Columns:    TransactionTagsColumns,
+		PrimaryKey: []*schema.Column{TransactionTagsColumns[0], TransactionTagsColumns[1]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "transaction_tags_transaction_id",
+				Columns:    []*schema.Column{TransactionTagsColumns[0]},
+				RefColumns: []*schema.Column{TransactionsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "transaction_tags_tag_id",
+				Columns:    []*schema.Column{TransactionTagsColumns[1]},
+				RefColumns: []*schema.Column{TagsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		TagsTable,
 		TransactionsTable,
 		UsersTable,
+		TransactionTagsTable,
 	}
 )
 
 func init() {
+	TagsTable.ForeignKeys[0].RefTable = UsersTable
 	TransactionsTable.ForeignKeys[0].RefTable = UsersTable
+	TransactionTagsTable.ForeignKeys[0].RefTable = TransactionsTable
+	TransactionTagsTable.ForeignKeys[1].RefTable = TagsTable
 }

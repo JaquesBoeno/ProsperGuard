@@ -43,9 +43,11 @@ type Transaction struct {
 type TransactionEdges struct {
 	// Holder holds the value of the holder edge.
 	Holder *User `json:"holder,omitempty"`
+	// Tags holds the value of the tags edge.
+	Tags []*Tag `json:"tags,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 }
 
 // HolderOrErr returns the Holder value or an error if the edge
@@ -59,6 +61,15 @@ func (e TransactionEdges) HolderOrErr() (*User, error) {
 		return e.Holder, nil
 	}
 	return nil, &NotLoadedError{edge: "holder"}
+}
+
+// TagsOrErr returns the Tags value or an error if the edge
+// was not loaded in eager-loading.
+func (e TransactionEdges) TagsOrErr() ([]*Tag, error) {
+	if e.loadedTypes[1] {
+		return e.Tags, nil
+	}
+	return nil, &NotLoadedError{edge: "tags"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -160,6 +171,11 @@ func (t *Transaction) GetValue(name string) (ent.Value, error) {
 // QueryHolder queries the "holder" edge of the Transaction entity.
 func (t *Transaction) QueryHolder() *UserQuery {
 	return NewTransactionClient(t.config).QueryHolder(t)
+}
+
+// QueryTags queries the "tags" edge of the Transaction entity.
+func (t *Transaction) QueryTags() *TagQuery {
+	return NewTransactionClient(t.config).QueryTags(t)
 }
 
 // Update returns a builder for updating this Transaction.

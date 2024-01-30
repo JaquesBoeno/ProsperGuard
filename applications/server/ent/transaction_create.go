@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/JaquesBoeno/ProsperGuard/server/ent/tag"
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/transaction"
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/user"
 )
@@ -102,6 +103,21 @@ func (tc *TransactionCreate) SetNillableHolderID(id *string) *TransactionCreate 
 // SetHolder sets the "holder" edge to the User entity.
 func (tc *TransactionCreate) SetHolder(u *User) *TransactionCreate {
 	return tc.SetHolderID(u.ID)
+}
+
+// AddTagIDs adds the "tags" edge to the Tag entity by IDs.
+func (tc *TransactionCreate) AddTagIDs(ids ...string) *TransactionCreate {
+	tc.mutation.AddTagIDs(ids...)
+	return tc
+}
+
+// AddTags adds the "tags" edges to the Tag entity.
+func (tc *TransactionCreate) AddTags(t ...*Tag) *TransactionCreate {
+	ids := make([]string, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return tc.AddTagIDs(ids...)
 }
 
 // Mutation returns the TransactionMutation object of the builder.
@@ -255,6 +271,22 @@ func (tc *TransactionCreate) createSpec() (*Transaction, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.user_transactions = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := tc.mutation.TagsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   transaction.TagsTable,
+			Columns: transaction.TagsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(tag.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

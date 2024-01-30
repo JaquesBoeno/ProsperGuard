@@ -31,5 +31,6 @@ func (Transaction) Fields() []ent.Field {
 func (Transaction) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("holder", User.Type).Ref("transactions").Unique(),
+		edge.To("tags", Tag.Type),
 	}
 }

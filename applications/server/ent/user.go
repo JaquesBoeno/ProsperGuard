@@ -34,9 +34,11 @@ type User struct {
 type UserEdges struct {
 	// Transactions holds the value of the transactions edge.
 	Transactions []*Transaction `json:"transactions,omitempty"`
+	// Tags holds the value of the tags edge.
+	Tags []*Tag `json:"tags,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 }
 
 // TransactionsOrErr returns the Transactions value or an error if the edge
@@ -46,6 +48,15 @@ func (e UserEdges) TransactionsOrErr() ([]*Transaction, error) {
 		return e.Transactions, nil
 	}
 	return nil, &NotLoadedError{edge: "transactions"}
+}
+
+// TagsOrErr returns the Tags value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) TagsOrErr() ([]*Tag, error) {
+	if e.loadedTypes[1] {
+		return e.Tags, nil
+	}
+	return nil, &NotLoadedError{edge: "tags"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -116,6 +127,11 @@ func (u *User) Value(name string) (ent.Value, error) {
 // QueryTransactions queries the "transactions" edge of the User entity.
 func (u *User) QueryTransactions() *TransactionQuery {
 	return NewUserClient(u.config).QueryTransactions(u)
+}
+
+// QueryTags queries the "tags" edge of the User entity.
+func (u *User) QueryTags() *TagQuery {
+	return NewUserClient(u.config).QueryTags(u)
 }
 
 // Update returns a builder for updating this User.
