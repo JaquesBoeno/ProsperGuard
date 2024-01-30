@@ -16,6 +16,18 @@ services:
     volumes:
       - prosper-guard-database:/var/lib/postgresql
 
+  sonic-search:
+    image: valeriansaliou/sonic:v1.4.8
+    container_name: prosper-guard-sonic-search
+    restart: always
+    ports:
+      - 1491:1491
+    volumes:
+      - ./sonic.cfg:/etc/sonic.cfg
+      - prosper-guard-sonic-search:/var/lib/sonic/store/
+    networks:
+      - backend
+
   server:
     build:
       context: ./applications/server/
@@ -56,3 +68,4 @@ networks:
 
 volumes:
   prosper-guard-database:
+  prosper-guard-sonic-search:
