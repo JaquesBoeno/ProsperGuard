@@ -190,3 +190,20 @@ func (t *TransactionController) GetAllTransactionsFromOneUser(c fiber.Ctx) error
 
 	return c.Status(fiber.StatusOK).JSON(transactions)
 }
+
+func (t *TransactionController) GetTransactionsSuggests(c fiber.Ctx) error {
+	m := c.Queries()
+	requiredFields := []string{"terms", "holder_id"}
+
+	if ok, field := hasEmptyFields(requiredFields, m); ok {
+		return c.Status(fiber.StatusBadRequest).Send([]byte("provide a nonempty " + field))
+	}
+
+	results, err := t.SonicSearch.Suggest("transactions", m["holder_id"], m["terms"], 5)
+
+	if err != nil {
+		log.Printf("GetTransactionsSuggests, get suggests: %v", err)
+	}
+
+	return c.Status(fiber.StatusOK).JSON(results)
+}

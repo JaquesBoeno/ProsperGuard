@@ -41,4 +41,5 @@ func (r Router) Start() {
 	}
 	r.App.Post("/transaction/create", transactionController.CreateTransaction)
 	r.App.Get("/transaction/getFromUser", transactionController.GetAllTransactionsFromOneUser)
+	r.App.Get("/transaction/suggest", transactionController.GetTransactionsSuggests)
 }
