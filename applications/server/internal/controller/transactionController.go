@@ -9,7 +9,6 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/JaquesBoeno/ProsperGuard/server/ent"
-	"github.com/JaquesBoeno/ProsperGuard/server/ent/user"
 	"github.com/expectedsh/go-sonic/sonic"
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
@@ -34,8 +33,7 @@ func (t *TransactionController) CreateTransaction(c fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).Send([]byte("Failed on create the transaction, provide a valid 'type' (income OR expense)"))
 	}
 
-	_, err := t.DbClient.User.Query().Where(user.ID(m["holder_id"])).Only(t.Ctx)
-	if err != nil {
+	if _, err := userExists(t.DbClient, m["holder_id"], t.Ctx); err != nil {
 		log.Printf("TransactionController, CreateTransaction, verify user exists %v", err)
 		return c.Status(fiber.StatusBadRequest).Send([]byte("Failed on create the transaction, user not exist."))
 	}
@@ -89,7 +87,8 @@ func (t *TransactionController) GetAllTransactionsFromOneUser(c fiber.Ctx) error
 		return c.Status(fiber.StatusBadRequest).Send([]byte("provide a nonempty " + field))
 	}
 
-	user, err := t.DbClient.User.Query().Where(user.ID(m["holder_id"])).Only(t.Ctx)
+	user, err := userExists(t.DbClient, m["holder_id"], t.Ctx)
+
 	if err != nil {
 		log.Printf("TransactionController, GetAllTransactionsFromOneUser, verify user exists %v", err)
 		return c.Status(fiber.StatusBadRequest).Send([]byte("Failed on get transactions, user not exist."))
@@ -99,60 +98,17 @@ func (t *TransactionController) GetAllTransactionsFromOneUser(c fiber.Ctx) error
 	if ok := typeFieldIsValid(typeFilter); typeFilter != "" && !ok {
 		return c.Status(fiber.StatusBadRequest).Send([]byte("Failed on create the transaction, provide a valid 'type' (income OR expense)"))
 	}
-	var value_min float64 = 0
-	var value_max float64 = 0
-	var value_exact float64 = 0
 
-	if m["value_min"] != "" {
-		value_min, err = strconv.ParseFloat(m["value_min"], 64)
-		if err != nil {
-			log.Printf("TransactionController, CreateTransaction, format value: %v", err)
-			return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
-		}
+	valueMap, err := parseToFloat(m, []string{"value_exact", "value_max", "value_min"})
+	if err != nil {
+		log.Printf("TransactionController, CreateTransaction, format value: %v", err)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
 	}
 
-	if m["value_max"] != "" {
-		value_max, err = strconv.ParseFloat(m["value_max"], 64)
-		if err != nil {
-			log.Printf("TransactionController, CreateTransaction, format value: %v", err)
-			return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
-		}
-	}
-
-	if m["value_exact"] != "" {
-		value_exact, err = strconv.ParseFloat(m["value_exact"], 64)
-		if err != nil {
-			log.Printf("TransactionController, CreateTransaction, format value: %v", err)
-			return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
-		}
-	}
-
-	var date_start time.Time
-	var date_end time.Time
-	var date_exact time.Time
-
-	if m["date_start"] != "" {
-		date_start, err = time.Parse(time.RFC3339, m["date_start"])
-		if err != nil {
-			log.Printf("TransactionController, CreateTransaction, format value: %v", err)
-			return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
-		}
-	}
-
-	if m["date_end"] != "" {
-		date_end, err = time.Parse(time.RFC3339, m["date_end"])
-		if err != nil {
-			log.Printf("TransactionController, CreateTransaction, format value: %v", err)
-			return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
-		}
-	}
-
-	if m["date_exact"] != "" {
-		date_exact, err = time.Parse(time.RFC3339, m["date_exact"])
-		if err != nil {
-			log.Printf("TransactionController, CreateTransaction, format value: %v", err)
-			return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
-		}
+	datesMap, err := parseToDate(m, []string{"date_start", "date_end", "date_exact"})
+	if err != nil {
+		log.Printf("TransactionController, CreateTransaction, format dates: %v", err)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
 	}
 
 	transactions, err := user.QueryTransactions().
@@ -161,24 +117,24 @@ func (t *TransactionController) GetAllTransactionsFromOneUser(c fiber.Ctx) error
 				s.Where(sql.InValues("type", typeFilter))
 			}
 
-			if value_exact > 0 {
-				s.Where(sql.EQ("value", value_exact))
-			} else if value_min > 0 && value_max > value_min {
-				s.Where(sql.And(sql.GTE("value", value_min), sql.LTE("value", value_max)))
-			} else if value_min > 0 && value_max <= value_min {
-				s.Where(sql.GTE("value", value_min))
-			} else if value_min == 0 && value_max > value_min {
-				s.Where(sql.LTE("value", value_max))
+			if valueMap["value_exact"] > 0 {
+				s.Where(sql.EQ("value", valueMap["value_exact"]))
+			} else if valueMap["value_min"] > 0 && valueMap["value_max"] > valueMap["value_min"] {
+				s.Where(sql.And(sql.GTE("value", valueMap["value_min"]), sql.LTE("value", valueMap["value_max"])))
+			} else if valueMap["value_min"] > 0 && valueMap["value_max"] <= valueMap["value_min"] {
+				s.Where(sql.GTE("value", valueMap["value_min"]))
+			} else if valueMap["value_min"] == 0 && valueMap["value_max"] > valueMap["value_min"] {
+				s.Where(sql.LTE("value", valueMap["value_max"]))
 			}
 
 			if m["date_exact"] != "" {
-				s.Where(sql.EQ("date", date_exact))
+				s.Where(sql.EQ("date", datesMap["date_exact"]))
 			} else if m["date_start"] != "" && m["date_end"] == "" {
-				s.Where(sql.GTE("date", date_start))
+				s.Where(sql.GTE("date", datesMap["date_start"]))
 			} else if m["date_end"] != "" && m["date_start"] == "" {
-				s.Where(sql.LTE("date", date_end))
+				s.Where(sql.LTE("date", datesMap["date_end"]))
 			} else if m["date_end"] != "" && m["date_start"] != "" {
-				s.Where(sql.And(sql.GTE("date", date_start), sql.LTE("date", date_end)))
+				s.Where(sql.And(sql.GTE("date", datesMap["date_start"]), sql.LTE("date", datesMap["date_end"])))
 			}
 		}).
 		All(t.Ctx)
