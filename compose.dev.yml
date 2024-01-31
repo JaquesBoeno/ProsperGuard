@@ -26,7 +26,7 @@ services:
       - ./sonic.cfg:/etc/sonic.cfg
       - prosper-guard-sonic-search:/var/lib/sonic/store/
     networks:
-      - backend
+      - prosper-guard-backend
 
   server:
     build:
@@ -39,6 +39,9 @@ services:
     environment:
       PORT: ${BACKEND_PORT}
       DATABASE_URL: ${DATABASE_URL}
+      SONIC_HOST: sonic-search
+      SONIC_PORT: 1491
+      SONIC_PASSWORD: SecretPassword
     networks:
       - prosper-guard-backend
       - prosper-guard-frontend

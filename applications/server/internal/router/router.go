@@ -5,13 +5,16 @@ import (
 
 	"github.com/JaquesBoeno/ProsperGuard/server/ent"
 	"github.com/JaquesBoeno/ProsperGuard/server/internal/controller"
+	"github.com/expectedsh/go-sonic/sonic"
 	"github.com/gofiber/fiber/v3"
 )
 
 type Router struct {
-	App      *fiber.App
-	DbClient *ent.Client
-	Ctx      context.Context
+	App           *fiber.App
+	DbClient      *ent.Client
+	SonicIngester sonic.Ingestable
+	SonicSearch   sonic.Searchable
+	Ctx           context.Context
 }
 
 func (r Router) Start() {
@@ -31,8 +34,10 @@ func (r Router) Start() {
 
 	// Transactions
 	transactionController := controller.TransactionController{
-		DbClient: r.DbClient,
-		Ctx:      r.Ctx,
+		DbClient:      r.DbClient,
+		Ctx:           r.Ctx,
+		SonicIngester: r.SonicIngester,
+		SonicSearch:   r.SonicSearch,
 	}
 	r.App.Post("/transaction/create", transactionController.CreateTransaction)
 	r.App.Get("/transaction/getFromUser", transactionController.GetAllTransactionsFromOneUser)

@@ -25,9 +25,11 @@ func (s Server) Start() {
 	})
 
 	router := router.Router{
-		App:      app,
-		DbClient: s.DbClient,
-		Ctx:      context.Background(),
+		App:           app,
+		DbClient:      s.DbClient,
+		Ctx:           context.Background(),
+		SonicIngester: s.SonicIngester,
+		SonicSearch:   s.SonicSearch,
 	}
 
 	router.Start()

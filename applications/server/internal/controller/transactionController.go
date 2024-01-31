@@ -10,13 +10,16 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/JaquesBoeno/ProsperGuard/server/ent"
 	"github.com/JaquesBoeno/ProsperGuard/server/ent/user"
+	"github.com/expectedsh/go-sonic/sonic"
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
 )
 
 type TransactionController struct {
-	DbClient *ent.Client
-	Ctx      context.Context
+	DbClient      *ent.Client
+	Ctx           context.Context
+	SonicIngester sonic.Ingestable
+	SonicSearch   sonic.Searchable
 }
 
 func (t *TransactionController) CreateTransaction(c fiber.Ctx) error {
@@ -33,22 +36,21 @@ func (t *TransactionController) CreateTransaction(c fiber.Ctx) error {
 
 	_, err := t.DbClient.User.Query().Where(user.ID(m["holder_id"])).Only(t.Ctx)
 	if err != nil {
-		log.Println(fmt.Sprintf("TransactionController, CreateTransaction, verify user exists %v", err))
+		log.Printf("TransactionController, CreateTransaction, verify user exists %v", err)
 		return c.Status(fiber.StatusBadRequest).Send([]byte("Failed on create the transaction, user not exist."))
 	}
 
 	value, err := strconv.ParseFloat(m["value"], 64)
 	if err != nil {
-		log.Println(fmt.Sprintf("TransactionController, CreateTransaction, format value: %v", err))
+		log.Printf("TransactionController, CreateTransaction, format value: %v", err)
 		return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
 	}
 
 	date, err := time.Parse(time.RFC3339, m["date"])
 	if err != nil {
-		log.Println(fmt.Sprintf("TransactionController, CreateTransaction, format date: %v", err))
+		log.Printf("TransactionController, CreateTransaction, format date: %v", err)
 		return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
 	}
-
 	transaction, err := t.DbClient.Transaction.Create().
 		SetID((uuid.New()).String()).
 		SetType(m["type"]).
@@ -60,7 +62,19 @@ func (t *TransactionController) CreateTransaction(c fiber.Ctx) error {
 		Save(t.Ctx)
 
 	if err != nil {
-		log.Println(fmt.Sprintf("TransactionController, CreateTransaction, insert in db: %v", err))
+		log.Printf("TransactionController, CreateTransaction, insert in db: %v", err)
+		return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
+	}
+
+	text := fmt.Sprintf("%s %s", transaction.Name, transaction.Description)
+
+	err = t.SonicIngester.Push("transactions", m["holder_id"], transaction.ID, text, "por")
+
+	if err != nil {
+		t.DbClient.Transaction.Delete().Where(func(s *sql.Selector) {
+			s.Where(sql.InValues("id", transaction.ID))
+		})
+		log.Printf("TransactionController, CreateTransaction, insert in sonic: %v", err)
 		return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
 	}
 
@@ -77,7 +91,7 @@ func (t *TransactionController) GetAllTransactionsFromOneUser(c fiber.Ctx) error
 
 	user, err := t.DbClient.User.Query().Where(user.ID(m["holder_id"])).Only(t.Ctx)
 	if err != nil {
-		log.Println(fmt.Sprintf("TransactionController, GetAllTransactionsFromOneUser, verify user exists %v", err))
+		log.Printf("TransactionController, GetAllTransactionsFromOneUser, verify user exists %v", err)
 		return c.Status(fiber.StatusBadRequest).Send([]byte("Failed on get transactions, user not exist."))
 	}
 
@@ -92,7 +106,7 @@ func (t *TransactionController) GetAllTransactionsFromOneUser(c fiber.Ctx) error
 	if m["value_min"] != "" {
 		value_min, err = strconv.ParseFloat(m["value_min"], 64)
 		if err != nil {
-			log.Println(fmt.Sprintf("TransactionController, CreateTransaction, format value: %v", err))
+			log.Printf("TransactionController, CreateTransaction, format value: %v", err)
 			return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
 		}
 	}
@@ -100,7 +114,7 @@ func (t *TransactionController) GetAllTransactionsFromOneUser(c fiber.Ctx) error
 	if m["value_max"] != "" {
 		value_max, err = strconv.ParseFloat(m["value_max"], 64)
 		if err != nil {
-			log.Println(fmt.Sprintf("TransactionController, CreateTransaction, format value: %v", err))
+			log.Printf("TransactionController, CreateTransaction, format value: %v", err)
 			return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
 		}
 	}
@@ -108,7 +122,7 @@ func (t *TransactionController) GetAllTransactionsFromOneUser(c fiber.Ctx) error
 	if m["value_exact"] != "" {
 		value_exact, err = strconv.ParseFloat(m["value_exact"], 64)
 		if err != nil {
-			log.Println(fmt.Sprintf("TransactionController, CreateTransaction, format value: %v", err))
+			log.Printf("TransactionController, CreateTransaction, format value: %v", err)
 			return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
 		}
 	}
@@ -120,7 +134,7 @@ func (t *TransactionController) GetAllTransactionsFromOneUser(c fiber.Ctx) error
 	if m["date_start"] != "" {
 		date_start, err = time.Parse(time.RFC3339, m["date_start"])
 		if err != nil {
-			log.Println(fmt.Sprintf("TransactionController, CreateTransaction, format value: %v", err))
+			log.Printf("TransactionController, CreateTransaction, format value: %v", err)
 			return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
 		}
 	}
@@ -128,7 +142,7 @@ func (t *TransactionController) GetAllTransactionsFromOneUser(c fiber.Ctx) error
 	if m["date_end"] != "" {
 		date_end, err = time.Parse(time.RFC3339, m["date_end"])
 		if err != nil {
-			log.Println(fmt.Sprintf("TransactionController, CreateTransaction, format value: %v", err))
+			log.Printf("TransactionController, CreateTransaction, format value: %v", err)
 			return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
 		}
 	}
@@ -136,7 +150,7 @@ func (t *TransactionController) GetAllTransactionsFromOneUser(c fiber.Ctx) error
 	if m["date_exact"] != "" {
 		date_exact, err = time.Parse(time.RFC3339, m["date_exact"])
 		if err != nil {
-			log.Println(fmt.Sprintf("TransactionController, CreateTransaction, format value: %v", err))
+			log.Printf("TransactionController, CreateTransaction, format value: %v", err)
 			return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
 		}
 	}
@@ -170,7 +184,7 @@ func (t *TransactionController) GetAllTransactionsFromOneUser(c fiber.Ctx) error
 		All(t.Ctx)
 
 	if err != nil {
-		log.Println(fmt.Sprintf("TransactionController, GetAllTransactionsFromOneUser %v", err))
+		log.Printf("TransactionController, GetAllTransactionsFromOneUser %v", err)
 		return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on get transactions."))
 	}
 
