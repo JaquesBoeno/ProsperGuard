@@ -21,8 +21,6 @@ func (u *UserController) CreateUser(c fiber.Ctx) error {
 	email := c.Query("email")
 	plainPassword := c.Query("password")
 
-	log.Printf(c.Query("*"))
-
 	if name == "" {
 		return c.Status(fiber.StatusBadRequest).Send([]byte("provide a nonempty name"))
 	}
@@ -56,7 +54,7 @@ func (u *UserController) GetAllUser(c fiber.Ctx) error {
 	users, err := u.DbClient.User.Query().All(u.Ctx)
 
 	if err != nil {
-		log.Fatal(fmt.Sprintf("UserController, GetAllUsers: %v", err))
+		log.Fatalf("UserController, GetAllUsers: %v", err)
 	}
 
 	return c.Status(fiber.StatusOK).JSON(users)

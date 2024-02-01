@@ -111,8 +111,26 @@ func (t *TransactionController) GetAllTransactionsFromOneUser(c fiber.Ctx) error
 		return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on create the transaction"))
 	}
 
+	var transactionsIdsFromSonicSearch []string
+	if m["terms"] != "" {
+		transactionsIdsFromSonicSearch, err = t.SonicSearch.Query("transactions", m["holder_id"], m["terms"], 100, 0, "por")
+		if err != nil {
+			log.Printf("TransactionController, GetTransactions, query in sonic: %v", err)
+			return c.Status(fiber.StatusInternalServerError).Send([]byte("Failed on query transactions"))
+		}
+	}
+
+	idsQuery := make([]*sql.Predicate, len(transactionsIdsFromSonicSearch))
+
+	for i, id := range transactionsIdsFromSonicSearch {
+		idsQuery[i] = sql.InValues("id", id)
+	}
+
 	transactions, err := user.QueryTransactions().
 		Where(func(s *sql.Selector) {
+			if len(transactionsIdsFromSonicSearch) > 0 {
+				s.Where(sql.Or(idsQuery...))
+			}
 			if typeFilter != "" {
 				s.Where(sql.InValues("type", typeFilter))
 			}
