@@ -37,18 +37,6 @@ func userExists(DbClient *ent.Client, holder_id string, Ctx context.Context) (*e
 	return user, nil
 }
 
-// func parseToFloat(str string) (float64, error) {
-// 	if str != "" {
-// 		value, err := strconv.ParseFloat(str, 64)
-// 		if err != nil {
-// 			return 0.0, err
-// 		}
-
-// 		return value, nil
-// 	}
-// 	return 0.0, fmt.Errorf("provide a nonempty string")
-// }
-
 func parseToFloat(m map[string]string, fields []string) (map[string]float64, error) {
 	results := make(map[string]float64, len(fields))
 
@@ -64,20 +52,6 @@ func parseToFloat(m map[string]string, fields []string) (map[string]float64, err
 
 	return results, nil
 }
-
-// func parseToDate(str string) (time.Time, error) {
-// 	if str != "" {
-// 		date, err := time.Parse(time.RFC3339, str)
-
-// 		if err != nil {
-// 			return date, err
-// 		}
-
-// 		return date, nil
-// 	}
-
-// 	return time.Now(), fmt.Errorf("provide a nonempty string")
-// }
 
 func parseToDate(m map[string]string, fields []string) (map[string]time.Time, error) {
 	results := make(map[string]time.Time, len(fields))
