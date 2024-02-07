@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/JaquesBoeno/ProsperGuard/server/ent"
@@ -17,34 +16,25 @@ type UserController struct {
 }
 
 func (u *UserController) CreateUser(c fiber.Ctx) error {
-	name := c.Query("name")
-	email := c.Query("email")
-	plainPassword := c.Query("password")
+	m := c.Queries()
+	requiredFields := []string{"name", "email", "password"}
 
-	if name == "" {
-		return c.Status(fiber.StatusBadRequest).Send([]byte("provide a nonempty name"))
+	if ok, field := hasEmptyFields(requiredFields, m); ok {
+		return c.Status(fiber.StatusBadRequest).Send([]byte("provide a nonempty " + field))
 	}
 
-	if email == "" {
-		return c.Status(fiber.StatusBadRequest).Send([]byte("provide a nonempty email"))
-	}
-
-	if plainPassword == "" {
-		return c.Status(fiber.StatusBadRequest).Send([]byte("provide a nonempty password"))
-	}
-
-	passwordHash := security.HashPassword(plainPassword)
+	passwordHash := security.HashPassword(m["password"])
 
 	user, err := u.DbClient.User.Create().
 		SetID((uuid.New()).String()).
-		SetName(name).
-		SetEmail(email).
+		SetName(m["name"]).
+		SetEmail(m["email"]).
 		SetPasswordHash(passwordHash).
 		SetOtpSeed("").
 		Save(u.Ctx)
 
 	if err != nil {
-		log.Fatal(fmt.Printf("UserController, CreateUser: %v", err))
+		log.Printf("UserController, CreateUser: %v", err)
 	}
 
 	return c.Status(fiber.StatusOK).Send([]byte(user.ID))

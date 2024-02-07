@@ -42,6 +42,7 @@ func HashPassword(pass string) string {
 	return formatString
 }
 
+// Return True if password math
 func VerifyHashedPassword(pass string, hashConcatenated string) (bool, error) {
 	hashMap := make(map[string]string)
 	sliced := strings.Split(hashConcatenated, "$")[1:]
@@ -53,6 +54,11 @@ func VerifyHashedPassword(pass string, hashConcatenated string) (bool, error) {
 	}
 
 	salt, err := base64.RawStdEncoding.Strict().DecodeString(hashMap["s"])
+
+	if err != nil {
+		return false, err
+	}
+
 	hash, err := base64.RawStdEncoding.Strict().DecodeString(hashMap["h"])
 
 	if err != nil {

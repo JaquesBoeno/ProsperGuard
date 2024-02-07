@@ -1,5 +1,4 @@
 # ProsperGuard
-
 - ## Stack:
 
   - front-end: ReactJS

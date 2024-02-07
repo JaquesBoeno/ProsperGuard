@@ -10,11 +10,11 @@ import (
 )
 
 type Router struct {
-	App           *fiber.App
-	DbClient      *ent.Client
-	SonicIngester sonic.Ingestable
-	SonicSearch   sonic.Searchable
-	Ctx           context.Context
+	App         *fiber.App
+	DbClient    *ent.Client
+	SonicIngest sonic.Ingestable
+	SonicSearch sonic.Searchable
+	Ctx         context.Context
 }
 
 func (r Router) Start() {
@@ -36,7 +36,7 @@ func (r Router) Start() {
 	transactionController := controller.TransactionController{
 		DbClient:      r.DbClient,
 		Ctx:           r.Ctx,
-		SonicIngester: r.SonicIngester,
+		SonicIngester: r.SonicIngest,
 		SonicSearch:   r.SonicSearch,
 	}
 	r.App.Post("/transaction/create", transactionController.CreateTransaction)
