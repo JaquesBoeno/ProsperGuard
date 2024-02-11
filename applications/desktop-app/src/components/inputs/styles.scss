@@ -1,0 +1,87 @@
+.InputComponent {
+  > div {
+    position: relative;
+
+    span {
+      transition: background-color 0s 0s, top var(--transition-time) 0s,
+        left var(--transition-time) 0s, padding var(--transition-time) 0s,
+        font-size var(--transition-time) 0s;
+
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 0rem;
+      padding: 0 0.9rem;
+      line-height: 1rem;
+      font-size: 1rem;
+      pointer-events: none;
+    }
+
+    input,
+    select {
+      color: var(--text);
+      padding: 0.9rem;
+
+      border: 2px solid #ccc;
+      border-radius: var(--border-radius);
+      width: 100%;
+      outline: 0;
+      font-size: 1rem;
+      line-height: 1rem;
+
+      &[type='number'] {
+        appearance: textfield;
+        -moz-appearance: textfield;
+      }
+
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      &:focus {
+        border-color: var(--primary);
+        & + span {
+          color: var(--primary);
+        }
+      }
+
+      &:focus,
+      &:valid {
+        & + span {
+          top: 0;
+          left: 0.5rem;
+          transform: translateY(-50%);
+          background-color: var(--white);
+          padding: 0 0.5rem;
+          font-size: 0.8rem;
+          font-weight: 600;
+
+          transition: background-color 0s calc(var(--transition-time) / 2),
+            top var(--transition-time) 0s, left var(--transition-time) 0s,
+            padding var(--transition-time) 0s, font-size var(--transition-time) 0s;
+        }
+
+        & + span + span {
+          visibility: visible;
+        }
+      }
+
+      &.CurrencyInput {
+        text-align: right;
+      }
+    }
+  }
+
+  .error {
+    color: var(--red);
+  }
+}
+
+.SelectInput {
+  background-color: var(--white);
+  option.default {
+    display: none;
+  }
+}
