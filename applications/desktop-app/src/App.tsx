@@ -1,24 +1,19 @@
 import './App.scss'
 import { SideBar } from '~/components/SideBar'
-import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+import { BrowserRouter, Route, RouterProvider, Routes, createBrowserRouter } from 'react-router-dom'
 import { Login } from '~/pages/login'
-
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: (
-      <>
-        <SideBar />
-        <Login />
-      </>
-    ),
-  },
-])
 
 function App() {
   return (
     <>
-      <RouterProvider router={router} />
+      <BrowserRouter>
+        <SideBar />
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/home" element={<Login />} />
+          <Route path="/transactions" element={<Login />} />
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }

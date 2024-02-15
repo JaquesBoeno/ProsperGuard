@@ -1,2 +1,51 @@
 .SideBar {
+  height: 100vh;
+  width: fit-content;
+  padding: 1rem;
+  background-color: var(--white);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--box-shadow);
+
+  .logo h1 {
+    padding: 0 1rem;
+    width: 100%;
+  }
+
+  nav ul {
+    margin-top: 2rem;
+    list-style-type: none;
+    li {
+      a {
+        display: flex;
+        align-items: center;
+        transition: var(--transition-time);
+        border: 0;
+        padding: 0.8rem 1rem;
+        border-radius: var(--border-radius);
+        span {
+          margin-left: 1rem;
+          color: inherit;
+          font-size: 1rem;
+          font-weight: 500;
+        }
+
+        svg {
+          font-size: 1.5rem;
+          line-height: 1.5rem;
+        }
+
+        &:hover {
+          background-color: var(--secondary);
+          color: var(--white);
+          svg {
+            path {
+              stroke: var(--white);
+            }
+          }
+        }
+      }
+    }
+  }
 }
