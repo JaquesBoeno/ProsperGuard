@@ -1,0 +1,11 @@
+.greetings {
+  display: flex;
+}
+
+.cards {
+  display: flex;
+  gap: 2rem;
+  > section {
+    flex: 1;
+  }
+}

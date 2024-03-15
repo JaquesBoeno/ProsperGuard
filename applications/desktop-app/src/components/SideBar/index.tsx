@@ -1,13 +1,13 @@
 import React from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import './styles.scss'
 import { FiHome } from 'react-icons/fi'
 import { LuArrowUpDown } from 'react-icons/lu'
 import { UserCard } from '~/components/UserCard'
 
 const SideBar: React.FC = () => {
-  const location = useLocation()
-  let path = ['/', '/singup']
+  // const location = useLocation()
+  // let path = ['/', '/singup']
   // let show = !path.includes(location.pathname)
   let show = true
   return (
